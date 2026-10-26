@@ -6,8 +6,8 @@ Aplicación de escritorio en Python + PyQt5 para importar, consultar, filtrar y 
 
 - [x] Fase 0 — Configuración del proyecto y datos normalizados
 - [x] Fase 1 — Núcleo de datos y lectura/validación de CSV
-- [ ] Fase 2 — Módulo de rutinas y ventana principal
-- [ ] Fase 3 — Búsqueda, filtros y ordenamiento
+- [x] Fase 2 — Módulo de rutinas y ventana principal
+- [x] Fase 3 — Búsqueda, filtros y ordenamiento
 - [ ] Fase 4 — Catálogo de ejercicios y cobertura
 - [ ] Fase 5 — Plan de alimentación
 - [ ] Fase 6 — Estadísticas
@@ -32,7 +32,7 @@ python3 -m pip install -r requirements.txt
 python3 main.py
 ```
 
-En esta fase se abre una ventana vacía como esqueleto de la aplicación.
+Al iniciar, la aplicación carga automáticamente `data/rutinas_fitness.csv` y muestra las 10 rutinas. Desde el botón «Importar CSV» o el menú **Archivo → Importar rutinas CSV...** se puede cargar otro archivo.
 
 ## Estructura
 
@@ -125,10 +125,31 @@ rutinas = [Rutina.from_row(fila) for fila in filas]
 print(len(rutinas))  # 10
 ```
 
+## Interfaz de rutinas
+
+La Fase 2 incorpora:
+
+- `services/rutina_service.py`: carga atómica, consulta por ID, días, grupos, niveles y valores únicos.
+- `ui/models/table_models.py`: modelo Qt reutilizable, 9 columnas, orden numérico/texto y tooltips.
+- `ui/widgets/rutinas_tab.py`: tabla ordenable, botón de importación y contador de registros.
+- `ui/main_window.py`: ventana con menú Archivo/Ayuda, barra de estado y carga inicial automática.
+- `main.py`: composición de servicios y arranque de la aplicación.
+
+## Búsqueda, filtros y ordenamiento
+
+La Fase 3 incorpora:
+
+- Filtros combinables por día, grupo muscular, nivel y horario.
+- Búsqueda libre por ID, día, grupo, ejercicio, nivel, horario, series, repeticiones y descanso.
+- Búsqueda insensible a mayúsculas y tildes, con soporte para varias palabras (`lunes pecho`).
+- Contador «Mostrando X de Y rutinas» y estado específico cuando no hay coincidencias.
+- Botón y atajo `Ctrl+L` para limpiar todos los filtros.
+- Ordenamiento por cualquier columna, conservado al aplicar o cambiar filtros.
+
 ## Pruebas
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-La Fase 1 incluye 41 pruebas de utilidades, modelos y servicio CSV. Las pruebas de los servicios restantes se incorporarán en la Fase 9.
+La Fase 3 incluye 78 pruebas de utilidades, modelos, servicio CSV, servicio de rutinas, modelo de tabla, pestaña de rutinas y ventana principal. Las pruebas de los servicios restantes se incorporarán en la Fase 9.

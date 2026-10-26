@@ -1,11 +1,11 @@
-﻿id_rutina,dia,horario,grupo_muscular,ejercicios,series,repeticiones_o_duracion,nivel,descanso
-R001,Lunes,07:00-08:00,Pecho,Press de banca; Press inclinado con mancuernas; Aperturas,3,8-12,Intermedio,60-90 s
-R002,Lunes,18:00-19:00,Tríceps,Extensiones en polea; Press francés; Fondos asistidos,3,10-12,Principiante,60 s
-R003,Martes,07:00-08:00,Espalda,Jalón al pecho; Remo con mancuerna; Peso muerto ligero,3,8-12,Intermedio,60-120 s
-R004,Martes,18:00-19:00,Bíceps,Curl con mancuernas; Curl martillo; Curl en banco inclinado,3,10-12,Principiante,60 s
-R005,Miércoles,07:00-08:00,Piernas,Sentadilla goblet; Prensa; Curl femoral; Elevación de gemelos,3,10-12,Principiante,60-120 s
-R006,Jueves,07:00-08:00,Hombros,Press de hombros; Elevaciones laterales; Pájaros,3,8-12,Intermedio,60-90 s
+id_rutina,dia,horario,grupo_muscular,ejercicios,series,repeticiones_o_duracion,nivel,descanso
+R001,Lunes,07:00-08:00,Pecho,Press de banca; Press inclinado con mancuernas; Aperturas,3,12-Aug,Intermedio,60-90 s
+R002,Lunes,18:00-19:00,Tríceps,Extensiones en polea; Press francés; Fondos asistidos,3,12-Oct,Principiante,60 s
+R003,Martes,07:00-08:00,Espalda,Jalón al pecho; Remo con mancuerna; Peso muerto ligero,3,12-Aug,Intermedio,60-120 s
+R004,Martes,18:00-19:00,Bíceps,Curl con mancuernas; Curl martillo; Curl en banco inclinado,3,12-Oct,Principiante,60 s
+R005,Miércoles,07:00-08:00,Piernas,Sentadilla goblet; Prensa; Curl femoral; Elevación de gemelos,3,12-Oct,Principiante,60-120 s
+R006,Jueves,07:00-08:00,Hombros,Press de hombros; Elevaciones laterales; Pájaros,3,12-Aug,Intermedio,60-90 s
 R007,Viernes,07:00-08:00,Cuerpo completo,Sentadilla; Press de pecho; Remo; Plancha,3,8-12 (plancha: 30 s),Principiante,60-90 s
 R008,Sábado,09:00-09:45,Abdomen y cardio,Plancha; Dead bug; Caminata rápida o bicicleta,3,30-45 s / 15-20 min cardio,Principiante,45-60 s
-R009,Domingo,Descanso,Recuperación,Descanso activo opcional: paseo suave y movilidad,0,No aplica,Todos,No aplica
-R010,Miércoles,18:00-18:30,Movilidad,Movilidad de cadera y hombros; estiramientos suaves,2,20-30 s por ejercicio,Todos,30 s
+R009,Domingo,Descanso,Recuperación,Descanso activo opcional: paseo suave y movilidad,0,No aplica,Principiante,No aplica
+R010,Miércoles,18:00-18:30,Movilidad,Movilidad de cadera y hombros; estiramientos suaves,2,20-30 s por ejercicio,Principiante,30 s
