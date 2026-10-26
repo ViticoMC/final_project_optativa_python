@@ -4,7 +4,7 @@ from typing import Any
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
-from app.models import Rutina
+from app.models import Ejercicio, Rutina
 from app.utils import normalizar_texto
 
 
@@ -142,3 +142,21 @@ class RutinaTableModel(BaseTableModel):
         parent=None,
     ) -> None:
         super().__init__(self.COLUMNAS, rutinas, parent)
+
+
+class EjercicioTableModel(BaseTableModel):
+    COLUMNAS = (
+        Columna("ID", "id_ejercicio"),
+        Columna("Nombre", "nombre"),
+        Columna("Grupo muscular", "grupo_muscular"),
+        Columna("Patrón de movimiento", "patron_movimiento"),
+        Columna("Equipamiento", "equipamiento"),
+        Columna("Nivel sugerido", "nivel_sugerido"),
+    )
+
+    def __init__(
+        self,
+        ejercicios: Sequence[Ejercicio] = (),
+        parent=None,
+    ) -> None:
+        super().__init__(self.COLUMNAS, ejercicios, parent)

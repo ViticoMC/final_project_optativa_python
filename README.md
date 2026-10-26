@@ -8,7 +8,7 @@ Aplicación de escritorio en Python + PyQt5 para importar, consultar, filtrar y 
 - [x] Fase 1 — Núcleo de datos y lectura/validación de CSV
 - [x] Fase 2 — Módulo de rutinas y ventana principal
 - [x] Fase 3 — Búsqueda, filtros y ordenamiento
-- [ ] Fase 4 — Catálogo de ejercicios y cobertura
+- [x] Fase 4 — Catálogo de ejercicios y cobertura
 - [ ] Fase 5 — Plan de alimentación
 - [ ] Fase 6 — Estadísticas
 - [ ] Fase 7 — Exportación CSV
@@ -32,7 +32,7 @@ python3 -m pip install -r requirements.txt
 python3 main.py
 ```
 
-Al iniciar, la aplicación carga automáticamente `data/rutinas_fitness.csv` y muestra las 10 rutinas. Desde el botón «Importar CSV» o el menú **Archivo → Importar rutinas CSV...** se puede cargar otro archivo.
+Al iniciar, la aplicación carga automáticamente `data/rutinas_fitness.csv` y `data/catalogo_ejercicios.csv`, y muestra las pestañas **Rutinas** y **Ejercicios**. Las rutinas se pueden reemplazar desde el botón «Importar CSV» o el menú **Archivo → Importar rutinas CSV...**; el catálogo, desde «Importar catálogo CSV» o **Archivo → Importar catálogo CSV...** (o `Ctrl+Shift+O`).
 
 ## Estructura
 
@@ -54,6 +54,7 @@ final_project/
 │   ├── csv_service.py
 │   ├── rutina_service.py
 │   ├── ejercicio_service.py
+│   ├── container.py
 │   ├── nutricion_service.py
 │   ├── estadistica_service.py
 │   └── export_service.py
@@ -99,7 +100,7 @@ Los tres CSV se encuentran en `data/` y usan:
 
 - El campo `series` contiene un `0` en el día de descanso; el lector lo acepta como valor válido.
 - Los horarios incluyen valores no numéricos como `Descanso`, `Durante el día` o `Después de entrenar`.
-- Las rutinas mencionan 29 ejercicios (28 únicos), de los cuales solo 12 coinciden con el catálogo. La aplicación reportará la cobertura y los faltantes en lugar de inventar equivalencias.
+- Las rutinas mencionan 29 ejercicios (28 únicos), de los cuales solo 12 coinciden con el catálogo (**42.9 %** de cobertura). La aplicación reporta la cobertura y los 16 faltantes en lugar de inventar equivalencias.
 - Los grupos musculares de las rutinas incluyen categorías que no aparecen en el catálogo, como `Cuerpo completo`, `Abdomen y cardio`, `Recuperación` y `Movilidad`.
 
 ## Núcleo de datos
@@ -132,7 +133,8 @@ La Fase 2 incorpora:
 - `services/rutina_service.py`: carga atómica, consulta por ID, días, grupos, niveles y valores únicos.
 - `ui/models/table_models.py`: modelo Qt reutilizable, 9 columnas, orden numérico/texto y tooltips.
 - `ui/widgets/rutinas_tab.py`: tabla ordenable, botón de importación y contador de registros.
-- `ui/main_window.py`: ventana con menú Archivo/Ayuda, barra de estado y carga inicial automática.
+- `ui/main_window.py`: ventana con menú Archivo/Ayuda, barra de estado y carga inicial automática de rutinas y catálogo.
+- `services/container.py`: `AppServices`, contenedor que inyecta los servicios en la interfaz.
 - `main.py`: composición de servicios y arranque de la aplicación.
 
 ## Búsqueda, filtros y ordenamiento
@@ -146,10 +148,22 @@ La Fase 3 incorpora:
 - Botón y atajo `Ctrl+L` para limpiar todos los filtros.
 - Ordenamiento por cualquier columna, conservado al aplicar o cambiar filtros.
 
+## Catálogo de ejercicios y cobertura
+
+La Fase 4 incorpora:
+
+- `services/ejercicio_service.py`: carga atómica del catálogo, consulta por ID o nombre, filtros y cálculo de cobertura.
+- `EjercicioTableModel`: 6 columnas ordenables por ID, nombre, grupo, patrón, equipamiento y nivel.
+- Pestaña **Ejercicios** con filtros combinables por grupo muscular, nivel, patrón de movimiento y equipamiento.
+- Búsqueda libre por nombre, grupo, patrón, equipamiento, nivel y nota técnica.
+- Ficha técnica del ejercicio seleccionado, con tooltip y nota completa.
+- Indicador de cobertura (12/28, 42.9 %) y listado de los ejercicios de rutinas que faltan en el catálogo.
+- Importación independiente del catálogo sin perder las rutinas cargadas.
+
 ## Pruebas
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-La Fase 3 incluye 78 pruebas de utilidades, modelos, servicio CSV, servicio de rutinas, modelo de tabla, pestaña de rutinas y ventana principal. Las pruebas de los servicios restantes se incorporarán en la Fase 9.
+La Fase 4 incluye 104 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas y ejercicios, modelos de tabla, pestañas de rutinas y ejercicios, y ventana principal. Las pruebas de los servicios restantes se incorporarán en la Fase 9.

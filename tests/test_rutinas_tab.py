@@ -26,7 +26,7 @@ class RutinasTabTests(QtTestCase):
     def test_combos_poblados(self) -> None:
         self.assertEqual(self.tab.combo_dia.count(), 8)
         self.assertEqual(self.tab.combo_grupo.count(), 11)
-        self.assertEqual(self.tab.combo_nivel.count(), 4)
+        self.assertEqual(self.tab.combo_nivel.count(), 3)
         self.assertEqual(self.tab.combo_horario.count(), 6)
 
         placeholders = (
@@ -42,16 +42,17 @@ class RutinasTabTests(QtTestCase):
         self.assertEqual(self.tab.combo_horario.itemData(1), "07:00-08:00")
         self.assertEqual(self.tab.combo_horario.itemData(5), "Descanso")
 
-    def test_nivel_todos_no_se_repite(self) -> None:
+    def test_niveles_dinamicos_sin_duplicar_placeholder(self) -> None:
         textos = [
             self.tab.combo_nivel.itemText(indice)
             for indice in range(self.tab.combo_nivel.count())
         ]
 
-        self.assertEqual(textos.count("Todos"), 1)
         self.assertEqual(textos[0], "Todos los niveles")
-        indice_todos = textos.index("Todos")
-        self.assertEqual(self.tab.combo_nivel.itemData(indice_todos), "Todos")
+        self.assertNotIn("Todos los niveles", textos[1:])
+        self.assertEqual(len(textos), len(set(textos)))
+        for nivel in self.servicio.niveles():
+            self.assertEqual(textos.count(nivel), 1)
 
     def test_filtro_por_dia(self) -> None:
         self.seleccionar(self.tab.combo_dia, "Lunes")

@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app.config import COLUMNAS_RUTINA, DIAS, NIVELES, RUTINAS_PATH
+from app.config import COLUMNAS_RUTINA, DIAS, RUTINAS_PATH
 from app.exceptions import CsvFormatError, DataValidationError
 from app.utils import normalizar_texto
 from services.csv_service import CsvService
@@ -56,7 +56,10 @@ class RutinaServiceTests(unittest.TestCase):
         self.servicio.cargar()
 
         self.assertEqual(self.servicio.dias(), list(DIAS))
-        self.assertEqual(self.servicio.niveles(), list(NIVELES))
+        self.assertEqual(
+            self.servicio.niveles(),
+            ["Principiante", "Intermedio"],
+        )
         self.assertIn("Bíceps", self.servicio.grupos())
         self.assertIn("Movilidad", self.servicio.grupos())
         self.assertEqual(
@@ -70,7 +73,7 @@ class RutinaServiceTests(unittest.TestCase):
         valores = self.servicio.valores_unicos("nivel")
 
         self.assertEqual(valores, sorted(set(valores), key=normalizar_texto))
-        self.assertEqual(set(valores), {"Principiante", "Intermedio", "Todos"})
+        self.assertEqual(set(valores), {"Principiante", "Intermedio"})
 
     def test_campo_desconocido(self) -> None:
         with self.assertRaises(ValueError):
@@ -84,8 +87,7 @@ class RutinaServiceTests(unittest.TestCase):
             ({"dia": "Lunes"}, 2),
             ({"grupo": "Pecho"}, 1),
             ({"nivel": "Intermedio"}, 3),
-            ({"nivel": "Principiante"}, 5),
-            ({"nivel": "Todos"}, 2),
+            ({"nivel": "Principiante"}, 7),
             ({"horario": "18:00-19:00"}, 2),
             ({"dia": "Domingo"}, 1),
         )

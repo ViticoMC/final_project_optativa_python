@@ -1,4 +1,4 @@
-﻿id_ejercicio,nombre,grupo_muscular,patron_movimiento,equipamiento,nivel_sugerido,nota_tecnica
+id_ejercicio,nombre,grupo_muscular,patron_movimiento,equipamiento,nivel_sugerido,nota_tecnica
 E001,Press de banca,Pecho,Empuje horizontal,Barra o mancuernas,Principiante-intermedio,Usar carga controlable y técnica correcta
 E002,Press inclinado con mancuernas,Pecho,Empuje inclinado,Mancuernas y banco,Principiante-intermedio,No forzar el rango de movimiento
 E003,Jalón al pecho,Espalda,Tracción vertical,Polea,Principiante-intermedio,Evitar balancear el torso
@@ -10,5 +10,5 @@ E008,Curl con mancuernas,Bíceps,Flexión de codo,Mancuernas,Principiante,Evitar
 E009,Extensiones en polea,Tríceps,Extensión de codo,Polea,Principiante,Mantener los codos controlados
 E010,Plancha,Core,Estabilidad del tronco,Colchoneta,Principiante,Detenerse si se pierde la postura
 E011,Dead bug,Core,Estabilidad y coordinación,Colchoneta,Principiante,Mantener la zona lumbar controlada
-E012,Caminata rápida,Cardio,Actividad aeróbica,Ninguno,Todos,Ajustar el ritmo a la condición física
-E013,Movilidad de cadera y hombros,Movilidad,Movilidad articular,Ninguno,Todos,No realizar movimientos dolorosos
+E012,Caminata rápida,Cardio,Actividad aeróbica,Ninguno,Principiante,Ajustar el ritmo a la condición física
+E013,Movilidad de cadera y hombros,Movilidad,Movilidad articular,Ninguno,Principiante,No realizar movimientos dolorosos

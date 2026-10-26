@@ -2,9 +2,27 @@ import unittest
 
 from PyQt5.QtCore import Qt
 
-from app.models import Rutina
+from app.models import Ejercicio, Rutina
 from tests.qt_test_case import QtTestCase
-from ui.models.table_models import RutinaTableModel
+from ui.models.table_models import EjercicioTableModel, RutinaTableModel
+
+
+def crear_ejercicio(
+    id_ejercicio: str,
+    nombre: str,
+    grupo: str = "Pecho",
+) -> Ejercicio:
+    return Ejercicio.from_row(
+        {
+            "id_ejercicio": id_ejercicio,
+            "nombre": nombre,
+            "grupo_muscular": grupo,
+            "patron_movimiento": "Empuje horizontal",
+            "equipamiento": "Barra o mancuernas",
+            "nivel_sugerido": "Principiante",
+            "nota_tecnica": "Usar carga controlable",
+        }
+    )
 
 
 def crear_rutina(
@@ -121,6 +139,56 @@ class RutinaTableModelTests(QtTestCase):
         self.assertIsInstance(registros, tuple)
         self.assertEqual(len(registros), 3)
         self.assertEqual(self.modelo.rowCount(), 3)
+
+
+class EjercicioTableModelTests(QtTestCase):
+    def setUp(self) -> None:
+        self.ejercicios = [
+            crear_ejercicio("E001", "Press de banca"),
+            crear_ejercicio("E002", "Jalón al pecho", grupo="Espalda"),
+            crear_ejercicio("E003", "Curl con mancuernas", grupo="Bíceps"),
+        ]
+        self.modelo = EjercicioTableModel(self.ejercicios)
+
+    def test_dimensiones_y_datos(self) -> None:
+        self.assertEqual(self.modelo.rowCount(), 3)
+        self.assertEqual(self.modelo.columnCount(), 6)
+        self.assertEqual(
+            self.modelo.headerData(1, Qt.Horizontal, Qt.DisplayRole),
+            "Nombre",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 1), Qt.DisplayRole),
+            "Press de banca",
+        )
+        self.assertIsInstance(
+            self.modelo.data(self.modelo.index(0, 0), Qt.UserRole),
+            Ejercicio,
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 1), Qt.ToolTipRole),
+            "Press de banca",
+        )
+
+    def test_sort_por_nombre_sin_tildes(self) -> None:
+        self.modelo.sort(1, Qt.AscendingOrder)
+
+        nombres = [
+            self.modelo.registro_en(fila).nombre
+            for fila in range(self.modelo.rowCount())
+        ]
+        self.assertEqual(
+            nombres,
+            ["Curl con mancuernas", "Jalón al pecho", "Press de banca"],
+        )
+
+    def test_set_registros(self) -> None:
+        self.modelo.set_registros([])
+        self.assertEqual(self.modelo.rowCount(), 0)
+
+        self.modelo.set_registros([crear_ejercicio("E100", "Plancha")])
+        self.assertEqual(self.modelo.rowCount(), 1)
+        self.assertEqual(self.modelo.registro_en(0).id_ejercicio, "E100")
 
 
 if __name__ == "__main__":

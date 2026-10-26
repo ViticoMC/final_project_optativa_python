@@ -1,4 +1,5 @@
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -8,6 +9,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QPushButton,
+    QShortcut,
     QTableView,
     QVBoxLayout,
     QWidget,
@@ -106,13 +108,16 @@ class RutinasTab(QWidget):
 
         self.boton_limpiar = QPushButton("Limpiar filtros")
         self.boton_limpiar.setToolTip("Limpiar todos los filtros (Ctrl+L)")
-        self.boton_limpiar.setShortcut("Ctrl+L")
         filtros.addWidget(self.boton_limpiar, 2, 4)
 
         for combo in self._combos:
             combo.currentIndexChanged.connect(self._aplicar_filtros)
         self.busqueda.textChanged.connect(self._aplicar_filtros)
         self.boton_limpiar.clicked.connect(self._limpiar_filtros)
+
+        self.atajo_limpiar = QShortcut(QKeySequence("Ctrl+L"), self)
+        self.atajo_limpiar.setContext(Qt.WidgetWithChildrenShortcut)
+        self.atajo_limpiar.activated.connect(self._limpiar_filtros)
 
         return filtros
 
