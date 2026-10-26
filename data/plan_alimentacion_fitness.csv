@@ -1,0 +1,8 @@
+﻿id_plan,comida,horario,alimentos_sugeridos,objetivo_general,observaciones
+D001,Desayuno,07:30,Avena con leche o bebida vegetal; plátano; huevo,Carbohidratos y proteína,"Ajustar por hambre, objetivos y tolerancia"
+D002,Media mañana,10:30,Yogur natural; fruta; puñado pequeño de frutos secos,"Proteína, fibra y grasas",Opción adaptable; frutos secos opcionales
+D003,Almuerzo,13:00,"Arroz o vianda; pollo, pescado, huevo o legumbres; verduras","Carbohidratos, proteína y fibra",Elegir alimentos disponibles y variar fuentes
+D004,Merienda,16:30,Pan integral o fruta; queso fresco o yogur,Energía y proteína,Útil antes de entrenar si se necesita
+D005,Cena,19:30,"Pescado, pollo, huevo o legumbres; verduras; arroz o vianda según actividad",Proteína y micronutrientes,Adaptar cantidad al apetito y necesidades
+D006,Hidratación,Durante el día,Agua regularmente; más según calor y sudoración,Hidratación,No sustituye comidas; necesidades individuales varían
+D007,Postentreno,Después de entrenar,Comida habitual con fuente de proteína y carbohidratos,Recuperación,No es obligatorio usar suplementos
