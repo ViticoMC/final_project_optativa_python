@@ -10,7 +10,7 @@ Aplicación de escritorio en Python + PyQt5 para importar, consultar, filtrar y 
 - [x] Fase 3 — Búsqueda, filtros y ordenamiento
 - [x] Fase 4 — Catálogo de ejercicios y cobertura
 - [x] Fase 5 — Plan de alimentación
-- [ ] Fase 6 — Estadísticas
+- [x] Fase 6 — Estadísticas
 - [ ] Fase 7 — Exportación CSV
 - [ ] Fase 8 — Robustez y experiencia de usuario
 - [ ] Fase 9 — Pruebas, documentación y demostración
@@ -32,7 +32,7 @@ python3 -m pip install -r requirements.txt
 python3 main.py
 ```
 
-Al iniciar, la aplicación carga automáticamente los tres CSV de `data/` y muestra las pestañas **Rutinas**, **Ejercicios** y **Nutrición**. Cada pestaña permite reemplazar su archivo desde el botón de importación o desde el menú **Archivo**: rutinas (`Ctrl+O`), catálogo (`Ctrl+Shift+O`) y plan nutricional (`Ctrl+Shift+N`).
+Al iniciar, la aplicación carga automáticamente los tres CSV de `data/` y muestra las pestañas **Rutinas**, **Ejercicios**, **Nutrición** y **Estadísticas**. Cada pestaña de datos permite reemplazar su archivo desde el botón de importación o desde el menú **Archivo**: rutinas (`Ctrl+O`), catálogo (`Ctrl+Shift+O`) y plan nutricional (`Ctrl+Shift+N`). Las estadísticas se recalculan automáticamente después de cada importación.
 
 ## Estructura
 
@@ -172,10 +172,21 @@ La Fase 5 incorpora:
 - Resumen del plan (7 comidas, 17 sugerencias y 16 alimentos únicos) con listado completo en el tooltip.
 - Importación independiente del plan sin perder rutinas ni catálogo.
 
+## Estadísticas
+
+La Fase 6 incorpora:
+
+- `services/estadistica_service.py`: cálculo de indicadores y distribuciones sin depender de la interfaz.
+- Tarjetas de resumen: rutinas, series programadas, catálogo y nutrición.
+- Distribuciones de rutinas por día, grupo muscular y nivel.
+- Volumen de series por grupo muscular y catálogo por grupo.
+- Comidas por objetivo y ejercicios mencionados en las rutinas, indicando si están en el catálogo.
+- Botón **Actualizar** y recálculo automático al importar cualquier CSV.
+
 ## Pruebas
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-La Fase 5 incluye 130 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas, ejercicios y nutrición, modelos de tabla, pestañas de rutinas, ejercicios y nutrición, y ventana principal. Las pruebas de los servicios restantes se incorporarán en la Fase 9.
+La Fase 6 incluye 148 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas, ejercicios, nutrición y estadísticas, modelos de tabla, pestañas de rutinas, ejercicios, nutrición y estadísticas, y ventana principal. Las pruebas del servicio de exportación se incorporarán en la Fase 9.

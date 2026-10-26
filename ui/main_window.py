@@ -13,6 +13,7 @@ from app.config import APP_TITLE, APP_VERSION, DATA_DIR
 from app.exceptions import FitPlanError
 from services.container import AppServices
 from ui.widgets.ejercicios_tab import EjerciciosTab
+from ui.widgets.estadisticas_tab import EstadisticasTab
 from ui.widgets.nutricion_tab import NutricionTab
 from ui.widgets.rutinas_tab import RutinasTab
 
@@ -28,6 +29,7 @@ class MainWindow(QMainWindow):
         self.rutina_service = servicios.rutinas
         self.ejercicio_service = servicios.ejercicios
         self.nutricion_service = servicios.nutricion
+        self.estadistica_service = servicios.estadisticas
         self._ultima_carpeta = Path(DATA_DIR)
 
         self.setWindowTitle(APP_TITLE)
@@ -98,6 +100,14 @@ class MainWindow(QMainWindow):
         )
         self.tabs.addTab(self.nutricion_tab, "Nutrición")
 
+        self.estadisticas_tab = EstadisticasTab(
+            self.estadistica_service,
+            self.rutina_service,
+            self.ejercicio_service,
+            self.nutricion_service,
+        )
+        self.tabs.addTab(self.estadisticas_tab, "Estadísticas")
+
         self.setCentralWidget(self.tabs)
 
     def _construir_menu(self) -> None:
@@ -142,6 +152,7 @@ class MainWindow(QMainWindow):
             self.nutricion_tab.refrescar_datos(reiniciar_filtros=True)
 
         self._actualizar_estado_global()
+        self.estadisticas_tab.refrescar_datos()
         if (
             self.rutina_service.total()
             or self.ejercicio_service.total()
@@ -190,6 +201,7 @@ class MainWindow(QMainWindow):
 
         self._ultima_carpeta = Path(ruta).parent
         self.ejercicios_tab.refrescar_datos(reiniciar_filtros=True)
+        self.estadisticas_tab.refrescar_datos()
         self._actualizar_estado_global()
         self.statusBar().showMessage(
             f"Catálogo importado: {total} ejercicios · {Path(ruta).name}",
@@ -214,6 +226,7 @@ class MainWindow(QMainWindow):
 
         self._ultima_carpeta = Path(ruta).parent
         self.nutricion_tab.refrescar_datos(reiniciar_filtros=True)
+        self.estadisticas_tab.refrescar_datos()
         self._actualizar_estado_global()
         self.statusBar().showMessage(
             f"Plan nutricional importado: {total} comidas · {Path(ruta).name}",
@@ -228,6 +241,7 @@ class MainWindow(QMainWindow):
     ) -> None:
         self.rutinas_tab.refrescar_datos(reiniciar_filtros=True)
         self.ejercicios_tab.actualizar_cobertura()
+        self.estadisticas_tab.refrescar_datos()
         self._actualizar_estado_global()
         self.statusBar().showMessage(
             f"{mensaje}: {total} rutinas · {nombre_archivo}",

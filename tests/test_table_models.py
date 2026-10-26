@@ -3,9 +3,12 @@ import unittest
 from PyQt5.QtCore import Qt
 
 from app.models import Comida, Ejercicio, Rutina
+from services.estadistica_service import Distribucion, EjercicioRutina
 from tests.qt_test_case import QtTestCase
 from ui.models.table_models import (
     ComidaTableModel,
+    DistribucionTableModel,
+    EjercicioRutinaTableModel,
     EjercicioTableModel,
     RutinaTableModel,
 )
@@ -269,6 +272,76 @@ class ComidaTableModelTests(QtTestCase):
         )
         self.assertEqual(self.modelo.rowCount(), 1)
         self.assertEqual(self.modelo.registro_en(0).id_plan, "D100")
+
+
+class DistribucionTableModelTests(QtTestCase):
+    def setUp(self) -> None:
+        self.modelo = DistribucionTableModel(
+            (
+                Distribucion("Pecho", 3, 30.0),
+                Distribucion("Espalda", 7, 70.0),
+            )
+        )
+
+    def test_dimensiones_y_formato(self) -> None:
+        self.assertEqual(self.modelo.rowCount(), 2)
+        self.assertEqual(self.modelo.columnCount(), 3)
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 0), Qt.DisplayRole),
+            "Pecho",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 1), Qt.DisplayRole),
+            "3",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 2), Qt.DisplayRole),
+            "30.0 %",
+        )
+
+    def test_sort_por_cantidad(self) -> None:
+        self.modelo.sort(1, Qt.DescendingOrder)
+
+        self.assertEqual(
+            [
+                self.modelo.registro_en(fila).categoria
+                for fila in range(self.modelo.rowCount())
+            ],
+            ["Espalda", "Pecho"],
+        )
+
+
+class EjercicioRutinaTableModelTests(QtTestCase):
+    def setUp(self) -> None:
+        self.modelo = EjercicioRutinaTableModel(
+            (
+                EjercicioRutina("Plancha", 2, True),
+                EjercicioRutina("Prensa", 1, False),
+            )
+        )
+
+    def test_dimensiones_y_estado(self) -> None:
+        self.assertEqual(self.modelo.rowCount(), 2)
+        self.assertEqual(self.modelo.columnCount(), 3)
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 2), Qt.DisplayRole),
+            "En catálogo",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(1, 2), Qt.DisplayRole),
+            "Faltante",
+        )
+
+    def test_sort_por_estado(self) -> None:
+        self.modelo.sort(2, Qt.DescendingOrder)
+
+        self.assertEqual(
+            [
+                self.modelo.registro_en(fila).nombre
+                for fila in range(self.modelo.rowCount())
+            ],
+            ["Prensa", "Plancha"],
+        )
 
 
 if __name__ == "__main__":

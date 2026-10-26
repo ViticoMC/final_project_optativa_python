@@ -8,6 +8,39 @@ from app.utils import normalizar_texto
 from services.csv_service import CsvService
 
 
+def calcular_cobertura(
+    rutinas: Iterable[Rutina],
+    ejercicios: Iterable[Ejercicio],
+) -> Cobertura:
+    nombres_usados: dict[str, str] = {}
+    for rutina in rutinas:
+        for nombre in rutina.ejercicios:
+            clave = normalizar_texto(nombre)
+            if clave and clave not in nombres_usados:
+                nombres_usados[clave] = nombre.strip()
+
+    nombres_catalogo = {
+        normalizar_texto(ejercicio.nombre) for ejercicio in ejercicios
+    }
+
+    encontrados = [
+        nombre
+        for clave, nombre in nombres_usados.items()
+        if clave in nombres_catalogo
+    ]
+    faltantes = [
+        nombre
+        for clave, nombre in nombres_usados.items()
+        if clave not in nombres_catalogo
+    ]
+
+    return Cobertura(
+        usados=tuple(sorted(nombres_usados.values(), key=normalizar_texto)),
+        encontrados=tuple(sorted(encontrados, key=normalizar_texto)),
+        faltantes=tuple(sorted(faltantes, key=normalizar_texto)),
+    )
+
+
 class EjercicioService:
     def __init__(
         self,
@@ -129,31 +162,4 @@ class EjercicioService:
         )
 
     def cobertura(self, rutinas: Iterable[Rutina]) -> Cobertura:
-        nombres_usados: dict[str, str] = {}
-        for rutina in rutinas:
-            for nombre in rutina.ejercicios:
-                clave = normalizar_texto(nombre)
-                if clave and clave not in nombres_usados:
-                    nombres_usados[clave] = nombre.strip()
-
-        nombres_catalogo = {
-            normalizar_texto(ejercicio.nombre)
-            for ejercicio in self._ejercicios
-        }
-
-        encontrados = [
-            nombre
-            for clave, nombre in nombres_usados.items()
-            if clave in nombres_catalogo
-        ]
-        faltantes = [
-            nombre
-            for clave, nombre in nombres_usados.items()
-            if clave not in nombres_catalogo
-        ]
-
-        return Cobertura(
-            usados=tuple(sorted(nombres_usados.values(), key=normalizar_texto)),
-            encontrados=tuple(sorted(encontrados, key=normalizar_texto)),
-            faltantes=tuple(sorted(faltantes, key=normalizar_texto)),
-        )
+        return calcular_cobertura(rutinas, self._ejercicios)

@@ -6,6 +6,7 @@ from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
 from app.models import Comida, Ejercicio, Rutina
 from app.utils import clave_horario, normalizar_texto
+from services.estadistica_service import Distribucion, EjercicioRutina
 
 
 def _formatear_lista(valor: object) -> str:
@@ -160,6 +161,47 @@ class EjercicioTableModel(BaseTableModel):
         parent=None,
     ) -> None:
         super().__init__(self.COLUMNAS, ejercicios, parent)
+
+
+class DistribucionTableModel(BaseTableModel):
+    COLUMNAS = (
+        Columna("Categoría", "categoria"),
+        Columna("Cantidad", "valor", alineacion=int(Qt.AlignCenter)),
+        Columna(
+            "Porcentaje",
+            "porcentaje",
+            formato=lambda valor: f"{valor:.1f} %",
+            clave_orden=lambda valor: valor,
+            alineacion=int(Qt.AlignCenter),
+        ),
+    )
+
+    def __init__(
+        self,
+        filas: Sequence[Distribucion] = (),
+        parent=None,
+    ) -> None:
+        super().__init__(self.COLUMNAS, filas, parent)
+
+
+class EjercicioRutinaTableModel(BaseTableModel):
+    COLUMNAS = (
+        Columna("Ejercicio", "nombre"),
+        Columna("Menciones", "menciones", alineacion=int(Qt.AlignCenter)),
+        Columna(
+            "Estado",
+            "en_catalogo",
+            formato=lambda valor: "En catálogo" if valor else "Faltante",
+            clave_orden=lambda valor: 0 if valor else 1,
+        ),
+    )
+
+    def __init__(
+        self,
+        filas: Sequence[EjercicioRutina] = (),
+        parent=None,
+    ) -> None:
+        super().__init__(self.COLUMNAS, filas, parent)
 
 
 class ComidaTableModel(BaseTableModel):

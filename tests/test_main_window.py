@@ -4,6 +4,7 @@ from app.config import CATALOGO_PATH, NUTRICION_PATH, RUTINAS_PATH
 from services.container import AppServices
 from services.csv_service import CsvService
 from services.ejercicio_service import EjercicioService
+from services.estadistica_service import EstadisticaService
 from services.nutricion_service import NutricionService
 from services.rutina_service import RutinaService
 from tests.qt_test_case import QtTestCase
@@ -17,6 +18,7 @@ class MainWindowTests(QtTestCase):
             rutinas=RutinaService(csv_service, RUTINAS_PATH),
             ejercicios=EjercicioService(csv_service, CATALOGO_PATH),
             nutricion=NutricionService(csv_service, NUTRICION_PATH),
+            estadisticas=EstadisticaService(),
         )
         ventana = MainWindow(servicios)
         self.addCleanup(ventana.close)
@@ -26,13 +28,31 @@ class MainWindowTests(QtTestCase):
     def test_carga_inicial_de_datos(self) -> None:
         ventana = self.crear_ventana()
 
-        self.assertEqual(ventana.tabs.count(), 3)
+        self.assertEqual(ventana.tabs.count(), 4)
         self.assertEqual(ventana.tabs.tabText(0), "Rutinas")
         self.assertEqual(ventana.tabs.tabText(1), "Ejercicios")
         self.assertEqual(ventana.tabs.tabText(2), "Nutrición")
+        self.assertEqual(ventana.tabs.tabText(3), "Estadísticas")
         self.assertEqual(ventana.rutinas_tab.modelo.rowCount(), 10)
         self.assertEqual(ventana.ejercicios_tab.modelo.rowCount(), 13)
         self.assertEqual(ventana.nutricion_tab.modelo.rowCount(), 7)
+        self.assertEqual(ventana.estadisticas_tab.modelo_dias.rowCount(), 7)
+        self.assertEqual(
+            ventana.estadisticas_tab.valor_rutinas.text(),
+            "10",
+        )
+        self.assertEqual(
+            ventana.estadisticas_tab.valor_series.text(),
+            "26",
+        )
+        self.assertEqual(
+            ventana.estadisticas_tab.valor_catalogo.text(),
+            "13",
+        )
+        self.assertEqual(
+            ventana.estadisticas_tab.valor_nutricion.text(),
+            "7",
+        )
         self.assertEqual(
             ventana.etiqueta_estado.text(),
             "10 rutinas · 13 ejercicios · 7 comidas",
@@ -96,6 +116,12 @@ class MainWindowTests(QtTestCase):
         self.assertTrue(ventana.nutricion_tab.tabla.isSortingEnabled())
         self.assertFalse(
             ventana.nutricion_tab.tabla.verticalHeader().isVisible()
+        )
+        self.assertFalse(
+            ventana.estadisticas_tab.tabla_dias.isSortingEnabled()
+        )
+        self.assertFalse(
+            ventana.estadisticas_tab.tabla_dias.verticalHeader().isVisible()
         )
 
 
