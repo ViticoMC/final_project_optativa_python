@@ -140,6 +140,18 @@ class RutinasTabTests(QtTestCase):
         ]
         self.assertEqual(ids, ["R005", "R010"])
 
+    def test_exportar_emite_senal_y_respeta_filtros(self) -> None:
+        self.seleccionar(self.tab.combo_dia, "Lunes")
+        recibido: list[bool] = []
+        self.tab.exportar_solicitado.connect(lambda: recibido.append(True))
+
+        self.tab.boton_exportar.click()
+
+        self.assertEqual(recibido, [True])
+        visibles = self.tab.registros_visibles()
+        self.assertEqual(len(visibles), 2)
+        self.assertEqual({rutina.dia for rutina in visibles}, {"Lunes"})
+
     def test_refrescar_datos_reinicia_filtros(self) -> None:
         self.seleccionar(self.tab.combo_dia, "Lunes")
         self.tab.busqueda.setText("press")

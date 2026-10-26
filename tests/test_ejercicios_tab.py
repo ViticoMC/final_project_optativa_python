@@ -154,6 +154,21 @@ class EjerciciosTabTests(QtTestCase):
             "13 ejercicios cargados.",
         )
 
+    def test_exportar_emite_senal_y_respeta_filtros(self) -> None:
+        self.seleccionar(self.tab.combo_grupo, "Pecho")
+        recibido: list[bool] = []
+        self.tab.exportar_solicitado.connect(lambda: recibido.append(True))
+
+        self.tab.boton_exportar.click()
+
+        self.assertEqual(recibido, [True])
+        visibles = self.tab.registros_visibles()
+        self.assertEqual(len(visibles), 2)
+        self.assertEqual(
+            {ejercicio.grupo_muscular for ejercicio in visibles},
+            {"Pecho"},
+        )
+
     def test_tab_sin_catalogo(self) -> None:
         servicio_vacio = EjercicioService(CsvService(), CATALOGO_PATH)
         tab = EjerciciosTab(servicio_vacio, self.rutinas)

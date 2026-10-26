@@ -30,7 +30,9 @@ class MainWindow(QMainWindow):
         self.ejercicio_service = servicios.ejercicios
         self.nutricion_service = servicios.nutricion
         self.estadistica_service = servicios.estadisticas
+        self.exportacion_service = servicios.exportacion
         self._ultima_carpeta = Path(DATA_DIR)
+        self._carpeta_exportacion = Path.home()
 
         self.setWindowTitle(APP_TITLE)
         self.resize(1200, 820)
@@ -70,6 +72,48 @@ class MainWindow(QMainWindow):
             self._importar_nutricion
         )
 
+        self.accion_exportar_rutinas = QAction(
+            "Exportar &rutinas visibles...",
+            self,
+        )
+        self.accion_exportar_rutinas.setStatusTip(
+            "Guardar en CSV las rutinas que coinciden con los filtros"
+        )
+        self.accion_exportar_rutinas.triggered.connect(self._exportar_rutinas)
+
+        self.accion_exportar_ejercicios = QAction(
+            "Exportar &catálogo visible...",
+            self,
+        )
+        self.accion_exportar_ejercicios.setStatusTip(
+            "Guardar en CSV los ejercicios que coinciden con los filtros"
+        )
+        self.accion_exportar_ejercicios.triggered.connect(
+            self._exportar_ejercicios
+        )
+
+        self.accion_exportar_nutricion = QAction(
+            "Exportar &plan visible...",
+            self,
+        )
+        self.accion_exportar_nutricion.setStatusTip(
+            "Guardar en CSV las comidas que coinciden con los filtros"
+        )
+        self.accion_exportar_nutricion.triggered.connect(
+            self._exportar_nutricion
+        )
+
+        self.accion_exportar_estadisticas = QAction(
+            "Exportar &estadísticas...",
+            self,
+        )
+        self.accion_exportar_estadisticas.setStatusTip(
+            "Guardar un resumen de indicadores y distribuciones en CSV"
+        )
+        self.accion_exportar_estadisticas.triggered.connect(
+            self._exportar_estadisticas
+        )
+
         self.accion_salir = QAction("&Salir", self)
         self.accion_salir.setShortcut("Ctrl+Q")
         self.accion_salir.triggered.connect(self.close)
@@ -83,6 +127,7 @@ class MainWindow(QMainWindow):
 
         self.rutinas_tab = RutinasTab(self.rutina_service)
         self.rutinas_tab.importar_solicitado.connect(self._importar_rutinas)
+        self.rutinas_tab.exportar_solicitado.connect(self._exportar_rutinas)
         self.tabs.addTab(self.rutinas_tab, "Rutinas")
 
         self.ejercicios_tab = EjerciciosTab(
@@ -92,11 +137,17 @@ class MainWindow(QMainWindow):
         self.ejercicios_tab.importar_solicitado.connect(
             self._importar_ejercicios
         )
+        self.ejercicios_tab.exportar_solicitado.connect(
+            self._exportar_ejercicios
+        )
         self.tabs.addTab(self.ejercicios_tab, "Ejercicios")
 
         self.nutricion_tab = NutricionTab(self.nutricion_service)
         self.nutricion_tab.importar_solicitado.connect(
             self._importar_nutricion
+        )
+        self.nutricion_tab.exportar_solicitado.connect(
+            self._exportar_nutricion
         )
         self.tabs.addTab(self.nutricion_tab, "Nutrición")
 
@@ -105,6 +156,9 @@ class MainWindow(QMainWindow):
             self.rutina_service,
             self.ejercicio_service,
             self.nutricion_service,
+        )
+        self.estadisticas_tab.exportar_solicitado.connect(
+            self._exportar_estadisticas
         )
         self.tabs.addTab(self.estadisticas_tab, "Estadísticas")
 
@@ -115,6 +169,15 @@ class MainWindow(QMainWindow):
         menu_archivo.addAction(self.accion_importar)
         menu_archivo.addAction(self.accion_importar_ejercicios)
         menu_archivo.addAction(self.accion_importar_nutricion)
+        menu_archivo.addSeparator()
+
+        menu_exportar = menu_archivo.addMenu("&Exportar")
+        menu_exportar.addAction(self.accion_exportar_rutinas)
+        menu_exportar.addAction(self.accion_exportar_ejercicios)
+        menu_exportar.addAction(self.accion_exportar_nutricion)
+        menu_exportar.addSeparator()
+        menu_exportar.addAction(self.accion_exportar_estadisticas)
+
         menu_archivo.addSeparator()
         menu_archivo.addAction(self.accion_salir)
 
@@ -231,6 +294,122 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(
             f"Plan nutricional importado: {total} comidas · {Path(ruta).name}",
             4000,
+        )
+
+    def _exportar_rutinas(self) -> None:
+        ruta = self._solicitar_ruta_exportacion(
+            "Exportar rutinas visibles",
+            "rutinas_exportadas.csv",
+        )
+        if ruta is None:
+            return
+
+        registros = self.rutinas_tab.registros_visibles()
+        try:
+            destino = self.exportacion_service.exportar_rutinas(
+                ruta,
+                registros,
+            )
+        except FitPlanError as exc:
+            self._mostrar_error("No se pudieron exportar las rutinas", exc)
+            return
+
+        self._finalizar_exportacion("rutinas", len(registros), destino)
+
+    def _exportar_ejercicios(self) -> None:
+        ruta = self._solicitar_ruta_exportacion(
+            "Exportar catálogo visible",
+            "catalogo_exportado.csv",
+        )
+        if ruta is None:
+            return
+
+        registros = self.ejercicios_tab.registros_visibles()
+        try:
+            destino = self.exportacion_service.exportar_ejercicios(
+                ruta,
+                registros,
+            )
+        except FitPlanError as exc:
+            self._mostrar_error("No se pudo exportar el catálogo", exc)
+            return
+
+        self._finalizar_exportacion("ejercicios", len(registros), destino)
+
+    def _exportar_nutricion(self) -> None:
+        ruta = self._solicitar_ruta_exportacion(
+            "Exportar plan visible",
+            "plan_alimentacion_exportado.csv",
+        )
+        if ruta is None:
+            return
+
+        registros = self.nutricion_tab.registros_visibles()
+        try:
+            destino = self.exportacion_service.exportar_comidas(
+                ruta,
+                registros,
+            )
+        except FitPlanError as exc:
+            self._mostrar_error("No se pudo exportar el plan", exc)
+            return
+
+        self._finalizar_exportacion("comidas", len(registros), destino)
+
+    def _exportar_estadisticas(self) -> None:
+        ruta = self._solicitar_ruta_exportacion(
+            "Exportar estadísticas",
+            "estadisticas_fitplan.csv",
+        )
+        if ruta is None:
+            return
+
+        estadisticas = self.estadistica_service.calcular(
+            self.rutina_service.todas(),
+            self.ejercicio_service.todos(),
+            self.nutricion_service.todos(),
+        )
+        try:
+            destino = self.exportacion_service.exportar_estadisticas(
+                ruta,
+                estadisticas,
+            )
+        except FitPlanError as exc:
+            self._mostrar_error(
+                "No se pudieron exportar las estadísticas",
+                exc,
+            )
+            return
+
+        self._carpeta_exportacion = destino.parent
+        self.statusBar().showMessage(
+            f"Estadísticas exportadas · {destino.name}",
+            5000,
+        )
+
+    def _solicitar_ruta_exportacion(
+        self,
+        titulo: str,
+        nombre_sugerido: str,
+    ) -> Path | None:
+        ruta, _ = QFileDialog.getSaveFileName(
+            self,
+            titulo,
+            str(self._carpeta_exportacion / nombre_sugerido),
+            "Archivos CSV (*.csv)",
+        )
+        return Path(ruta) if ruta else None
+
+    def _finalizar_exportacion(
+        self,
+        etiqueta: str,
+        cantidad: int,
+        destino: Path,
+    ) -> None:
+        self._carpeta_exportacion = destino.parent
+        self.statusBar().showMessage(
+            f"Exportación completada: {cantidad} {etiqueta} · {destino.name}",
+            5000,
         )
 
     def _aplicar_rutinas(

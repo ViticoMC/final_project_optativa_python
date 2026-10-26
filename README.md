@@ -11,7 +11,7 @@ Aplicación de escritorio en Python + PyQt5 para importar, consultar, filtrar y 
 - [x] Fase 4 — Catálogo de ejercicios y cobertura
 - [x] Fase 5 — Plan de alimentación
 - [x] Fase 6 — Estadísticas
-- [ ] Fase 7 — Exportación CSV
+- [x] Fase 7 — Exportación CSV
 - [ ] Fase 8 — Robustez y experiencia de usuario
 - [ ] Fase 9 — Pruebas, documentación y demostración
 
@@ -32,7 +32,7 @@ python3 -m pip install -r requirements.txt
 python3 main.py
 ```
 
-Al iniciar, la aplicación carga automáticamente los tres CSV de `data/` y muestra las pestañas **Rutinas**, **Ejercicios**, **Nutrición** y **Estadísticas**. Cada pestaña de datos permite reemplazar su archivo desde el botón de importación o desde el menú **Archivo**: rutinas (`Ctrl+O`), catálogo (`Ctrl+Shift+O`) y plan nutricional (`Ctrl+Shift+N`). Las estadísticas se recalculan automáticamente después de cada importación.
+Al iniciar, la aplicación carga automáticamente los tres CSV de `data/` y muestra las pestañas **Rutinas**, **Ejercicios**, **Nutrición** y **Estadísticas**. Cada pestaña de datos permite reemplazar su archivo desde el botón de importación o desde el menú **Archivo**: rutinas (`Ctrl+O`), catálogo (`Ctrl+Shift+O`) y plan nutricional (`Ctrl+Shift+N`). Las estadísticas se recalculan automáticamente después de cada importación. La vista filtrada de cada pestaña y las estadísticas se pueden guardar en CSV desde **Archivo → Exportar** o con los botones de exportación.
 
 ## Estructura
 
@@ -183,10 +183,21 @@ La Fase 6 incorpora:
 - Comidas por objetivo y ejercicios mencionados en las rutinas, indicando si están en el catálogo.
 - Botón **Actualizar** y recálculo automático al importar cualquier CSV.
 
+## Exportación CSV
+
+La Fase 7 incorpora:
+
+- `services/export_service.py`: exportación de rutinas, catálogo, plan y estadísticas mediante `CsvService`.
+- Botones **Exportar vista CSV** en las pestañas de datos y **Exportar estadísticas CSV** en el panel.
+- Menú **Archivo → Exportar** con las cuatro opciones.
+- Exportación de la vista filtrada actual, respetando búsqueda y filtros, o de todo el conjunto cuando no hay filtros.
+- Extensión `.csv` automática y escritura atómica, con creación de directorios si es necesario.
+- Estadísticas en formato largo (`seccion`, `categoria`, `valor`, `porcentaje`, `detalle`) con resumen, cobertura, distribuciones y ejercicios mencionados.
+
 ## Pruebas
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-La Fase 6 incluye 148 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas, ejercicios, nutrición y estadísticas, modelos de tabla, pestañas de rutinas, ejercicios, nutrición y estadísticas, y ventana principal. Las pruebas del servicio de exportación se incorporarán en la Fase 9.
+La Fase 7 incluye 161 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas, ejercicios, nutrición, estadísticas y exportación, modelos de tabla, pestañas de rutinas, ejercicios, nutrición y estadísticas, y ventana principal.

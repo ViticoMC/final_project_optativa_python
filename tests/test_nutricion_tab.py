@@ -146,6 +146,18 @@ class NutricionTabTests(QtTestCase):
             "7 comidas cargadas.",
         )
 
+    def test_exportar_emite_senal_y_respeta_filtros(self) -> None:
+        self.seleccionar(self.tab.combo_comida, "Cena")
+        recibido: list[bool] = []
+        self.tab.exportar_solicitado.connect(lambda: recibido.append(True))
+
+        self.tab.boton_exportar.click()
+
+        self.assertEqual(recibido, [True])
+        visibles = self.tab.registros_visibles()
+        self.assertEqual(len(visibles), 1)
+        self.assertEqual(visibles[0].comida, "Cena")
+
     def test_refrescar_datos_reinicia_filtros(self) -> None:
         self.seleccionar(self.tab.combo_comida, "Cena")
         self.tab.busqueda.setText("pollo")

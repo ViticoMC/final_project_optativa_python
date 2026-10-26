@@ -24,6 +24,7 @@ from ui.models.table_models import ComidaTableModel
 
 class NutricionTab(QWidget):
     importar_solicitado = pyqtSignal()
+    exportar_solicitado = pyqtSignal()
 
     def __init__(self, nutricion_service: NutricionService, parent=None) -> None:
         super().__init__(parent)
@@ -68,18 +69,30 @@ class NutricionTab(QWidget):
         derecha = QVBoxLayout()
         derecha.setSpacing(4)
 
+        botones = QHBoxLayout()
+        botones.setSpacing(6)
+
+        self.boton_exportar = QPushButton("Exportar vista CSV")
+        self.boton_exportar.setToolTip(
+            "Exportar las comidas visibles con los filtros actuales"
+        )
+        self.boton_exportar.clicked.connect(self.exportar_solicitado.emit)
+
         self.boton_importar = QPushButton("Importar plan CSV")
         self.boton_importar.setToolTip(
             "Seleccionar un archivo CSV con el plan de alimentación"
         )
         self.boton_importar.clicked.connect(self.importar_solicitado.emit)
 
+        botones.addWidget(self.boton_exportar)
+        botones.addWidget(self.boton_importar)
+
         self.etiqueta_resumen = QLabel()
         self.etiqueta_resumen.setWordWrap(True)
         self.etiqueta_resumen.setAlignment(Qt.AlignRight)
         self.etiqueta_resumen.setTextFormat(Qt.PlainText)
 
-        derecha.addWidget(self.boton_importar, 0, Qt.AlignRight)
+        derecha.addLayout(botones)
         derecha.addWidget(self.etiqueta_resumen)
 
         cabecera.addLayout(textos)
@@ -221,6 +234,13 @@ class NutricionTab(QWidget):
         combo = QComboBox()
         combo.setMinimumWidth(150)
         return combo
+
+    def registros_visibles(self) -> tuple[Comida, ...]:
+        return tuple(
+            registro
+            for registro in self.modelo.registros()
+            if isinstance(registro, Comida)
+        )
 
     def refrescar_datos(self, reiniciar_filtros: bool = False) -> None:
         self._cargar_combos(reiniciar=reiniciar_filtros)

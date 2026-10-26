@@ -71,6 +71,14 @@ class EstadisticasTabTests(QtTestCase):
         self.assertEqual(primer_ejercicio.menciones, 2)
         self.assertTrue(primer_ejercicio.en_catalogo)
 
+    def test_exportar_emite_senal(self) -> None:
+        recibido: list[bool] = []
+        self.tab.exportar_solicitado.connect(lambda: recibido.append(True))
+
+        self.tab.boton_exportar.click()
+
+        self.assertEqual(recibido, [True])
+
     def test_tablas_sin_ordenamiento(self) -> None:
         self.assertFalse(self.tab.tabla_dias.isSortingEnabled())
         self.assertFalse(self.tab.tabla_ejercicios.isSortingEnabled())

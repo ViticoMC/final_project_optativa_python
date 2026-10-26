@@ -15,12 +15,14 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from app.models import Rutina
 from services.rutina_service import RutinaService
 from ui.models.table_models import RutinaTableModel
 
 
 class RutinasTab(QWidget):
     importar_solicitado = pyqtSignal()
+    exportar_solicitado = pyqtSignal()
 
     def __init__(self, rutina_service: RutinaService, parent=None) -> None:
         super().__init__(parent)
@@ -62,12 +64,19 @@ class RutinasTab(QWidget):
         textos.addWidget(titulo)
         textos.addWidget(subtitulo)
 
+        self.boton_exportar = QPushButton("Exportar vista CSV")
+        self.boton_exportar.setToolTip(
+            "Exportar las rutinas visibles con los filtros actuales"
+        )
+        self.boton_exportar.clicked.connect(self.exportar_solicitado.emit)
+
         self.boton_importar = QPushButton("Importar CSV")
         self.boton_importar.setToolTip("Seleccionar un archivo CSV de rutinas")
         self.boton_importar.clicked.connect(self.importar_solicitado.emit)
 
         cabecera.addLayout(textos)
         cabecera.addStretch(1)
+        cabecera.addWidget(self.boton_exportar)
         cabecera.addWidget(self.boton_importar)
         return cabecera
 
@@ -145,6 +154,13 @@ class RutinasTab(QWidget):
         combo = QComboBox()
         combo.setMinimumWidth(140)
         return combo
+
+    def registros_visibles(self) -> tuple[Rutina, ...]:
+        return tuple(
+            registro
+            for registro in self.modelo.registros()
+            if isinstance(registro, Rutina)
+        )
 
     def refrescar_datos(self, reiniciar_filtros: bool = False) -> None:
         self._cargar_combos(reiniciar=reiniciar_filtros)

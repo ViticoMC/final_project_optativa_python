@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QAbstractItemModel, Qt
+from PyQt5.QtCore import QAbstractItemModel, Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QFrame,
@@ -25,6 +25,8 @@ from ui.models.table_models import (
 
 
 class EstadisticasTab(QWidget):
+    exportar_solicitado = pyqtSignal()
+
     def __init__(
         self,
         estadistica_service: EstadisticaService,
@@ -79,12 +81,19 @@ class EstadisticasTab(QWidget):
         textos.addWidget(titulo)
         textos.addWidget(subtitulo)
 
+        self.boton_exportar = QPushButton("Exportar estadísticas CSV")
+        self.boton_exportar.setToolTip(
+            "Guardar un resumen de las estadísticas en un archivo CSV"
+        )
+        self.boton_exportar.clicked.connect(self.exportar_solicitado.emit)
+
         self.boton_actualizar = QPushButton("Actualizar")
         self.boton_actualizar.setToolTip("Recalcular las estadísticas")
         self.boton_actualizar.clicked.connect(self.refrescar_datos)
 
         cabecera.addLayout(textos)
         cabecera.addStretch(1)
+        cabecera.addWidget(self.boton_exportar, 0, Qt.AlignTop)
         cabecera.addWidget(self.boton_actualizar, 0, Qt.AlignTop)
         return cabecera
 

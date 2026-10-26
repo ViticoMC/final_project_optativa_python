@@ -25,6 +25,7 @@ from ui.models.table_models import EjercicioTableModel
 
 class EjerciciosTab(QWidget):
     importar_solicitado = pyqtSignal()
+    exportar_solicitado = pyqtSignal()
 
     def __init__(
         self,
@@ -75,16 +76,28 @@ class EjerciciosTab(QWidget):
         derecha = QVBoxLayout()
         derecha.setSpacing(4)
 
+        botones = QHBoxLayout()
+        botones.setSpacing(6)
+
+        self.boton_exportar = QPushButton("Exportar vista CSV")
+        self.boton_exportar.setToolTip(
+            "Exportar los ejercicios visibles con los filtros actuales"
+        )
+        self.boton_exportar.clicked.connect(self.exportar_solicitado.emit)
+
         self.boton_importar = QPushButton("Importar catálogo CSV")
         self.boton_importar.setToolTip("Seleccionar un archivo CSV de ejercicios")
         self.boton_importar.clicked.connect(self.importar_solicitado.emit)
+
+        botones.addWidget(self.boton_exportar)
+        botones.addWidget(self.boton_importar)
 
         self.etiqueta_cobertura = QLabel()
         self.etiqueta_cobertura.setWordWrap(True)
         self.etiqueta_cobertura.setAlignment(Qt.AlignRight)
         self.etiqueta_cobertura.setTextFormat(Qt.PlainText)
 
-        derecha.addWidget(self.boton_importar, 0, Qt.AlignRight)
+        derecha.addLayout(botones)
         derecha.addWidget(self.etiqueta_cobertura)
 
         cabecera.addLayout(textos)
@@ -217,6 +230,13 @@ class EjerciciosTab(QWidget):
         combo = QComboBox()
         combo.setMinimumWidth(140)
         return combo
+
+    def registros_visibles(self) -> tuple[Ejercicio, ...]:
+        return tuple(
+            registro
+            for registro in self.modelo.registros()
+            if isinstance(registro, Ejercicio)
+        )
 
     def refrescar_datos(self, reiniciar_filtros: bool = False) -> None:
         self._cargar_combos(reiniciar=reiniciar_filtros)
