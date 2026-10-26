@@ -13,6 +13,7 @@ from app.config import APP_TITLE, APP_VERSION, DATA_DIR
 from app.exceptions import FitPlanError
 from services.container import AppServices
 from ui.widgets.ejercicios_tab import EjerciciosTab
+from ui.widgets.nutricion_tab import NutricionTab
 from ui.widgets.rutinas_tab import RutinasTab
 
 
@@ -26,6 +27,7 @@ class MainWindow(QMainWindow):
         self.servicios = servicios
         self.rutina_service = servicios.rutinas
         self.ejercicio_service = servicios.ejercicios
+        self.nutricion_service = servicios.nutricion
         self._ultima_carpeta = Path(DATA_DIR)
 
         self.setWindowTitle(APP_TITLE)
@@ -55,6 +57,17 @@ class MainWindow(QMainWindow):
             self._importar_ejercicios
         )
 
+        self.accion_importar_nutricion = QAction(
+            "Importar plan &nutricional CSV...", self
+        )
+        self.accion_importar_nutricion.setShortcut("Ctrl+Shift+N")
+        self.accion_importar_nutricion.setStatusTip(
+            "Cargar un archivo CSV con el plan de alimentación"
+        )
+        self.accion_importar_nutricion.triggered.connect(
+            self._importar_nutricion
+        )
+
         self.accion_salir = QAction("&Salir", self)
         self.accion_salir.setShortcut("Ctrl+Q")
         self.accion_salir.triggered.connect(self.close)
@@ -79,12 +92,19 @@ class MainWindow(QMainWindow):
         )
         self.tabs.addTab(self.ejercicios_tab, "Ejercicios")
 
+        self.nutricion_tab = NutricionTab(self.nutricion_service)
+        self.nutricion_tab.importar_solicitado.connect(
+            self._importar_nutricion
+        )
+        self.tabs.addTab(self.nutricion_tab, "Nutrición")
+
         self.setCentralWidget(self.tabs)
 
     def _construir_menu(self) -> None:
         menu_archivo = self.menuBar().addMenu("&Archivo")
         menu_archivo.addAction(self.accion_importar)
         menu_archivo.addAction(self.accion_importar_ejercicios)
+        menu_archivo.addAction(self.accion_importar_nutricion)
         menu_archivo.addSeparator()
         menu_archivo.addAction(self.accion_salir)
 
@@ -113,8 +133,20 @@ class MainWindow(QMainWindow):
         else:
             self.ejercicios_tab.refrescar_datos(reiniciar_filtros=True)
 
+        try:
+            self.nutricion_service.cargar()
+        except FitPlanError as exc:
+            self.nutricion_tab.refrescar_datos(reiniciar_filtros=True)
+            self._mostrar_error("No se pudo cargar el plan nutricional", exc)
+        else:
+            self.nutricion_tab.refrescar_datos(reiniciar_filtros=True)
+
         self._actualizar_estado_global()
-        if self.rutina_service.total() or self.ejercicio_service.total():
+        if (
+            self.rutina_service.total()
+            or self.ejercicio_service.total()
+            or self.nutricion_service.total()
+        ):
             self.statusBar().showMessage("Datos iniciales cargados", 4000)
 
     def _importar_rutinas(self) -> None:
@@ -164,6 +196,30 @@ class MainWindow(QMainWindow):
             4000,
         )
 
+    def _importar_nutricion(self) -> None:
+        ruta, _ = QFileDialog.getOpenFileName(
+            self,
+            "Importar plan de alimentación",
+            str(self._ultima_carpeta),
+            "Archivos CSV (*.csv);;Todos los archivos (*)",
+        )
+        if not ruta:
+            return
+
+        try:
+            total = self.nutricion_service.cargar(ruta)
+        except FitPlanError as exc:
+            self._mostrar_error("No se pudo importar el plan nutricional", exc)
+            return
+
+        self._ultima_carpeta = Path(ruta).parent
+        self.nutricion_tab.refrescar_datos(reiniciar_filtros=True)
+        self._actualizar_estado_global()
+        self.statusBar().showMessage(
+            f"Plan nutricional importado: {total} comidas · {Path(ruta).name}",
+            4000,
+        )
+
     def _aplicar_rutinas(
         self,
         total: int,
@@ -181,7 +237,8 @@ class MainWindow(QMainWindow):
     def _actualizar_estado_global(self) -> None:
         self.etiqueta_estado.setText(
             f"{self.rutina_service.total()} rutinas · "
-            f"{self.ejercicio_service.total()} ejercicios"
+            f"{self.ejercicio_service.total()} ejercicios · "
+            f"{self.nutricion_service.total()} comidas"
         )
 
     def _mostrar_error(self, titulo: str, error: Exception) -> None:

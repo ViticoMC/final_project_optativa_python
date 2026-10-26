@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from services.ejercicio_service import EjercicioService
+from services.nutricion_service import NutricionService
 from services.rutina_service import RutinaService
 
 
@@ -8,3 +9,4 @@ from services.rutina_service import RutinaService
 class AppServices:
     rutinas: RutinaService
     ejercicios: EjercicioService
+    nutricion: NutricionService

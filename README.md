@@ -9,7 +9,7 @@ Aplicación de escritorio en Python + PyQt5 para importar, consultar, filtrar y 
 - [x] Fase 2 — Módulo de rutinas y ventana principal
 - [x] Fase 3 — Búsqueda, filtros y ordenamiento
 - [x] Fase 4 — Catálogo de ejercicios y cobertura
-- [ ] Fase 5 — Plan de alimentación
+- [x] Fase 5 — Plan de alimentación
 - [ ] Fase 6 — Estadísticas
 - [ ] Fase 7 — Exportación CSV
 - [ ] Fase 8 — Robustez y experiencia de usuario
@@ -32,7 +32,7 @@ python3 -m pip install -r requirements.txt
 python3 main.py
 ```
 
-Al iniciar, la aplicación carga automáticamente `data/rutinas_fitness.csv` y `data/catalogo_ejercicios.csv`, y muestra las pestañas **Rutinas** y **Ejercicios**. Las rutinas se pueden reemplazar desde el botón «Importar CSV» o el menú **Archivo → Importar rutinas CSV...**; el catálogo, desde «Importar catálogo CSV» o **Archivo → Importar catálogo CSV...** (o `Ctrl+Shift+O`).
+Al iniciar, la aplicación carga automáticamente los tres CSV de `data/` y muestra las pestañas **Rutinas**, **Ejercicios** y **Nutrición**. Cada pestaña permite reemplazar su archivo desde el botón de importación o desde el menú **Archivo**: rutinas (`Ctrl+O`), catálogo (`Ctrl+Shift+O`) y plan nutricional (`Ctrl+Shift+N`).
 
 ## Estructura
 
@@ -133,7 +133,7 @@ La Fase 2 incorpora:
 - `services/rutina_service.py`: carga atómica, consulta por ID, días, grupos, niveles y valores únicos.
 - `ui/models/table_models.py`: modelo Qt reutilizable, 9 columnas, orden numérico/texto y tooltips.
 - `ui/widgets/rutinas_tab.py`: tabla ordenable, botón de importación y contador de registros.
-- `ui/main_window.py`: ventana con menú Archivo/Ayuda, barra de estado y carga inicial automática de rutinas y catálogo.
+- `ui/main_window.py`: ventana con menú Archivo/Ayuda, barra de estado y carga inicial automática de rutinas, catálogo y plan nutricional.
 - `services/container.py`: `AppServices`, contenedor que inyecta los servicios en la interfaz.
 - `main.py`: composición de servicios y arranque de la aplicación.
 
@@ -160,10 +160,22 @@ La Fase 4 incorpora:
 - Indicador de cobertura (12/28, 42.9 %) y listado de los ejercicios de rutinas que faltan en el catálogo.
 - Importación independiente del catálogo sin perder las rutinas cargadas.
 
+## Plan de alimentación
+
+La Fase 5 incorpora:
+
+- `services/nutricion_service.py`: carga atómica, consulta por ID, filtros y resumen de alimentos.
+- `ComidaTableModel`: 6 columnas con orden cronológico de horarios.
+- Pestaña **Nutrición** con filtros por comida, horario y objetivo general.
+- Búsqueda libre por comida, horario, alimento, objetivo y observaciones.
+- Panel de detalle con los alimentos sugeridos y las observaciones de cada comida.
+- Resumen del plan (7 comidas, 17 sugerencias y 16 alimentos únicos) con listado completo en el tooltip.
+- Importación independiente del plan sin perder rutinas ni catálogo.
+
 ## Pruebas
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-La Fase 4 incluye 104 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas y ejercicios, modelos de tabla, pestañas de rutinas y ejercicios, y ventana principal. Las pruebas de los servicios restantes se incorporarán en la Fase 9.
+La Fase 5 incluye 130 pruebas de utilidades, modelos, servicio CSV, servicios de rutinas, ejercicios y nutrición, modelos de tabla, pestañas de rutinas, ejercicios y nutrición, y ventana principal. Las pruebas de los servicios restantes se incorporarán en la Fase 9.

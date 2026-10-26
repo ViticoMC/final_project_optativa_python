@@ -4,11 +4,11 @@ from typing import Any
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
-from app.models import Ejercicio, Rutina
-from app.utils import normalizar_texto
+from app.models import Comida, Ejercicio, Rutina
+from app.utils import clave_horario, normalizar_texto
 
 
-def _formatear_ejercicios(valor: object) -> str:
+def _formatear_lista(valor: object) -> str:
     if isinstance(valor, (list, tuple)):
         return "; ".join(str(elemento) for elemento in valor)
     return "" if valor is None else str(valor)
@@ -129,7 +129,7 @@ class RutinaTableModel(BaseTableModel):
         Columna("Día", "dia"),
         Columna("Horario", "horario"),
         Columna("Grupo muscular", "grupo_muscular"),
-        Columna("Ejercicios", "ejercicios", formato=_formatear_ejercicios),
+        Columna("Ejercicios", "ejercicios", formato=_formatear_lista),
         Columna("Series", "series", alineacion=int(Qt.AlignCenter)),
         Columna("Repeticiones / duración", "repeticiones"),
         Columna("Nivel", "nivel"),
@@ -160,3 +160,25 @@ class EjercicioTableModel(BaseTableModel):
         parent=None,
     ) -> None:
         super().__init__(self.COLUMNAS, ejercicios, parent)
+
+
+class ComidaTableModel(BaseTableModel):
+    COLUMNAS = (
+        Columna("ID", "id_plan"),
+        Columna("Comida", "comida"),
+        Columna("Horario", "horario", clave_orden=clave_horario),
+        Columna(
+            "Alimentos sugeridos",
+            "alimentos",
+            formato=_formatear_lista,
+        ),
+        Columna("Objetivo", "objetivo_general"),
+        Columna("Observaciones", "observaciones"),
+    )
+
+    def __init__(
+        self,
+        comidas: Sequence[Comida] = (),
+        parent=None,
+    ) -> None:
+        super().__init__(self.COLUMNAS, comidas, parent)

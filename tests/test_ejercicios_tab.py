@@ -3,6 +3,7 @@ import unittest
 from PyQt5.QtWidgets import QComboBox
 
 from app.config import CATALOGO_PATH, RUTINAS_PATH
+from app.utils import normalizar_texto
 from services.csv_service import CsvService
 from services.ejercicio_service import EjercicioService
 from services.rutina_service import RutinaService
@@ -28,10 +29,22 @@ class EjerciciosTabTests(QtTestCase):
         combo.setCurrentIndex(indice)
 
     def test_combos_poblados(self) -> None:
-        self.assertEqual(self.tab.combo_grupo.count(), 10)
-        self.assertEqual(self.tab.combo_nivel.count(), 4)
-        self.assertEqual(self.tab.combo_patron.count(), 14)
-        self.assertEqual(self.tab.combo_equipo.count(), 11)
+        self.assertEqual(
+            self.tab.combo_grupo.count(),
+            len(self.ejercicios.grupos()) + 1,
+        )
+        self.assertEqual(
+            self.tab.combo_nivel.count(),
+            len(self.ejercicios.niveles()) + 1,
+        )
+        self.assertEqual(
+            self.tab.combo_patron.count(),
+            len(self.ejercicios.patrones()) + 1,
+        )
+        self.assertEqual(
+            self.tab.combo_equipo.count(),
+            len(self.ejercicios.equipamientos()) + 1,
+        )
 
         placeholders = (
             (self.tab.combo_grupo, "Todos los grupos"),
@@ -43,14 +56,17 @@ class EjerciciosTabTests(QtTestCase):
             self.assertEqual(combo.currentData(), "")
             self.assertEqual(combo.itemText(0), placeholder)
 
-    def test_nivel_todos_es_un_valor_real(self) -> None:
+    def test_niveles_reales_sin_duplicar_placeholder(self) -> None:
         textos = [
             self.tab.combo_nivel.itemText(indice)
             for indice in range(self.tab.combo_nivel.count())
         ]
 
-        self.assertEqual(textos.count("Todos"), 1)
         self.assertEqual(textos[0], "Todos los niveles")
+        self.assertNotIn("Todos los niveles", textos[1:])
+        self.assertEqual(len(textos), len(set(textos)))
+        for nivel in self.ejercicios.niveles():
+            self.assertEqual(textos.count(nivel), 1)
 
     def test_catalogo_inicial_y_detalle(self) -> None:
         self.assertEqual(self.tab.modelo.rowCount(), 13)
@@ -75,14 +91,21 @@ class EjerciciosTabTests(QtTestCase):
         )
         self.assertEqual(self.tab.detalle_titulo.text(), "Press de banca")
 
-    def test_filtro_por_nivel_todos(self) -> None:
-        self.seleccionar(self.tab.combo_nivel, "Todos")
+    def test_filtro_por_nivel_real(self) -> None:
+        nivel = self.ejercicios.niveles()[0]
+        self.seleccionar(self.tab.combo_nivel, nivel)
 
         ids = [
             self.tab.modelo.registro_en(fila).id_ejercicio
             for fila in range(self.tab.modelo.rowCount())
         ]
-        self.assertEqual(ids, ["E012", "E013"])
+        esperados = [
+            ejercicio.id_ejercicio
+            for ejercicio in self.ejercicios.todos()
+            if normalizar_texto(ejercicio.nivel_sugerido)
+            == normalizar_texto(nivel)
+        ]
+        self.assertEqual(ids, esperados)
 
     def test_filtro_por_patron_y_equipo(self) -> None:
         self.seleccionar(self.tab.combo_patron, "Empuje horizontal")

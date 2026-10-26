@@ -2,9 +2,13 @@ import unittest
 
 from PyQt5.QtCore import Qt
 
-from app.models import Ejercicio, Rutina
+from app.models import Comida, Ejercicio, Rutina
 from tests.qt_test_case import QtTestCase
-from ui.models.table_models import EjercicioTableModel, RutinaTableModel
+from ui.models.table_models import (
+    ComidaTableModel,
+    EjercicioTableModel,
+    RutinaTableModel,
+)
 
 
 def crear_ejercicio(
@@ -21,6 +25,24 @@ def crear_ejercicio(
             "equipamiento": "Barra o mancuernas",
             "nivel_sugerido": "Principiante",
             "nota_tecnica": "Usar carga controlable",
+        }
+    )
+
+
+def crear_comida(
+    id_plan: str,
+    comida: str,
+    horario: str,
+    objetivo: str = "Energía y proteína",
+) -> Comida:
+    return Comida.from_row(
+        {
+            "id_plan": id_plan,
+            "comida": comida,
+            "horario": horario,
+            "alimentos_sugeridos": "Avena; huevo",
+            "objetivo_general": objetivo,
+            "observaciones": "Ajustar por hambre",
         }
     )
 
@@ -189,6 +211,64 @@ class EjercicioTableModelTests(QtTestCase):
         self.modelo.set_registros([crear_ejercicio("E100", "Plancha")])
         self.assertEqual(self.modelo.rowCount(), 1)
         self.assertEqual(self.modelo.registro_en(0).id_ejercicio, "E100")
+
+
+class ComidaTableModelTests(QtTestCase):
+    def setUp(self) -> None:
+        self.comidas = [
+            crear_comida("D001", "Desayuno", "07:30"),
+            crear_comida("D002", "Cena", "19:30"),
+            crear_comida("D003", "Hidratación", "Durante el día"),
+        ]
+        self.modelo = ComidaTableModel(self.comidas)
+
+    def test_dimensiones_y_datos(self) -> None:
+        self.assertEqual(self.modelo.rowCount(), 3)
+        self.assertEqual(self.modelo.columnCount(), 6)
+        self.assertEqual(
+            self.modelo.headerData(0, Qt.Horizontal, Qt.DisplayRole),
+            "ID",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 1), Qt.DisplayRole),
+            "Desayuno",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 3), Qt.DisplayRole),
+            "Avena; huevo",
+        )
+        self.assertIsInstance(
+            self.modelo.data(self.modelo.index(0, 0), Qt.UserRole),
+            Comida,
+        )
+
+    def test_sort_por_horario(self) -> None:
+        self.modelo.sort(2, Qt.AscendingOrder)
+
+        comidas = [
+            self.modelo.registro_en(fila).comida
+            for fila in range(self.modelo.rowCount())
+        ]
+        self.assertEqual(comidas, ["Desayuno", "Cena", "Hidratación"])
+
+    def test_sort_por_comida_sin_tildes(self) -> None:
+        self.modelo.sort(1, Qt.AscendingOrder)
+
+        comidas = [
+            self.modelo.registro_en(fila).comida
+            for fila in range(self.modelo.rowCount())
+        ]
+        self.assertEqual(comidas, ["Cena", "Desayuno", "Hidratación"])
+
+    def test_set_registros(self) -> None:
+        self.modelo.set_registros([])
+        self.assertEqual(self.modelo.rowCount(), 0)
+
+        self.modelo.set_registros(
+            [crear_comida("D100", "Merienda", "16:30")]
+        )
+        self.assertEqual(self.modelo.rowCount(), 1)
+        self.assertEqual(self.modelo.registro_en(0).id_plan, "D100")
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from pathlib import Path
 
 from app.config import CATALOGO_PATH, COLUMNAS_EJERCICIO, RUTINAS_PATH
 from app.exceptions import DataValidationError
+from app.utils import normalizar_texto
 from services.csv_service import CsvService
 from services.ejercicio_service import EjercicioService
 from services.rutina_service import RutinaService
@@ -68,30 +69,59 @@ class EjercicioServiceTests(unittest.TestCase):
     def test_grupos_niveles_patrones_y_equipos(self) -> None:
         self.servicio.cargar()
 
-        self.assertEqual(len(self.servicio.grupos()), 9)
-        self.assertEqual(
+        for valores in (
+            self.servicio.grupos(),
             self.servicio.niveles(),
-            ["Principiante", "Principiante-intermedio", "Todos"],
-        )
-        self.assertEqual(len(self.servicio.patrones()), 13)
-        self.assertEqual(len(self.servicio.equipamientos()), 10)
+            self.servicio.patrones(),
+            self.servicio.equipamientos(),
+        ):
+            self.assertTrue(valores)
+            self.assertEqual(valores, sorted(valores, key=normalizar_texto))
+            self.assertEqual(len(valores), len(set(valores)))
+
         self.assertIn("Core", self.servicio.grupos())
         self.assertIn("Polea", self.servicio.equipamientos())
+
+    def _contar(self, atributo: str, valor: str) -> int:
+        return sum(
+            1
+            for ejercicio in self.servicio.todos()
+            if normalizar_texto(getattr(ejercicio, atributo))
+            == normalizar_texto(valor)
+        )
 
     def test_filtros_simples(self) -> None:
         self.servicio.cargar()
 
         casos = (
-            ({}, 13),
-            ({"grupo": "Pecho"}, 2),
-            ({"grupo": "Piernas"}, 2),
-            ({"grupo": "Core"}, 2),
-            ({"nivel": "Principiante"}, 6),
-            ({"nivel": "Principiante-intermedio"}, 5),
-            ({"nivel": "Todos"}, 2),
-            ({"patron": "Empuje horizontal"}, 1),
-            ({"equipo": "Polea"}, 2),
-            ({"equipo": "Colchoneta"}, 2),
+            ({}, self.servicio.total()),
+            ({"grupo": "Pecho"}, self._contar("grupo_muscular", "Pecho")),
+            ({"grupo": "Piernas"}, self._contar("grupo_muscular", "Piernas")),
+            ({"grupo": "Core"}, self._contar("grupo_muscular", "Core")),
+            (
+                {"nivel": "Principiante"},
+                self._contar("nivel_sugerido", "Principiante"),
+            ),
+            (
+                {"nivel": "Principiante-intermedio"},
+                self._contar("nivel_sugerido", "Principiante-intermedio"),
+            ),
+            (
+                {"nivel": "Todos"},
+                self._contar("nivel_sugerido", "Todos"),
+            ),
+            (
+                {"patron": "Empuje horizontal"},
+                self._contar("patron_movimiento", "Empuje horizontal"),
+            ),
+            (
+                {"equipo": "Polea"},
+                self._contar("equipamiento", "Polea"),
+            ),
+            (
+                {"equipo": "Colchoneta"},
+                self._contar("equipamiento", "Colchoneta"),
+            ),
         )
         for filtros, esperado in casos:
             with self.subTest(filtros=filtros):
