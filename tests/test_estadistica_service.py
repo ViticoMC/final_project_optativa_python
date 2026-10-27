@@ -29,26 +29,26 @@ class EstadisticaServiceTests(unittest.TestCase):
     def test_resumen_general(self) -> None:
         estadisticas = self.calcular()
 
-        self.assertEqual(estadisticas.total_rutinas, 10)
-        self.assertEqual(estadisticas.total_series, 26)
-        self.assertAlmostEqual(estadisticas.promedio_series, 2.6)
-        self.assertEqual(estadisticas.dias_entrenamiento, 6)
+        self.assertEqual(estadisticas.total_rutinas, 60)
+        self.assertEqual(estadisticas.total_series, 196)
+        self.assertAlmostEqual(estadisticas.promedio_series, 3.2667, places=4)
+        self.assertEqual(estadisticas.dias_entrenamiento, 7)
         self.assertEqual(estadisticas.dias_descanso, 1)
-        self.assertEqual(estadisticas.total_ejercicios, 13)
-        self.assertEqual(estadisticas.total_comidas, 7)
-        self.assertEqual(estadisticas.alimentos_unicos, 16)
-        self.assertEqual(estadisticas.sugerencias, 17)
-        self.assertEqual(estadisticas.total_ejercicios_rutinas, 28)
+        self.assertEqual(estadisticas.total_ejercicios, 100)
+        self.assertEqual(estadisticas.total_comidas, 42)
+        self.assertEqual(estadisticas.alimentos_unicos, 93)
+        self.assertEqual(estadisticas.sugerencias, 132)
+        self.assertEqual(estadisticas.total_ejercicios_rutinas, 100)
 
     def test_cobertura_de_ejercicios(self) -> None:
         estadisticas = self.calcular()
 
-        self.assertEqual(estadisticas.cobertura.total, 28)
-        self.assertEqual(len(estadisticas.cobertura.encontrados), 12)
-        self.assertEqual(len(estadisticas.cobertura.faltantes), 16)
+        self.assertEqual(estadisticas.cobertura.total, 100)
+        self.assertEqual(len(estadisticas.cobertura.encontrados), 100)
+        self.assertEqual(len(estadisticas.cobertura.faltantes), 0)
         self.assertAlmostEqual(
             estadisticas.cobertura.porcentaje,
-            42.857,
+            100.0,
             places=3,
         )
         self.assertEqual(
@@ -75,36 +75,39 @@ class EstadisticaServiceTests(unittest.TestCase):
                 "Domingo",
             ],
         )
-        self.assertEqual([fila.valor for fila in filas], [2, 2, 2, 1, 1, 1, 1])
-        self.assertAlmostEqual(filas[0].porcentaje, 20.0)
+        self.assertEqual(
+            [fila.valor for fila in filas],
+            [10, 9, 9, 8, 9, 9, 6],
+        )
+        self.assertAlmostEqual(filas[0].porcentaje, 16.6667, places=4)
         self.assertAlmostEqual(sum(fila.porcentaje for fila in filas), 100.0)
 
     def test_rutinas_por_grupo_y_nivel(self) -> None:
         estadisticas = self.calcular()
 
-        self.assertEqual(len(estadisticas.rutinas_por_grupo), 10)
+        self.assertEqual(len(estadisticas.rutinas_por_grupo), 14)
         self.assertEqual(
             sum(fila.valor for fila in estadisticas.rutinas_por_grupo),
-            10,
+            60,
         )
         self.assertEqual(
             {
                 fila.categoria: fila.valor
                 for fila in estadisticas.rutinas_por_nivel
             },
-            {"Principiante": 7, "Intermedio": 3},
+            {"Principiante": 22, "Intermedio": 27, "Avanzado": 11},
         )
         self.assertEqual(
             estadisticas.rutinas_por_nivel[0].categoria,
-            "Principiante",
+            "Intermedio",
         )
 
     def test_series_por_grupo(self) -> None:
         filas = self.calcular().series_por_grupo
 
         valores = {fila.categoria: fila.valor for fila in filas}
-        self.assertEqual(sum(valores.values()), 26)
-        self.assertEqual(valores["Movilidad"], 2)
+        self.assertEqual(sum(valores.values()), 196)
+        self.assertEqual(valores["Movilidad"], 13)
         self.assertNotIn("Recuperación", valores)
         self.assertTrue(all(fila.valor > 0 for fila in filas))
 
@@ -113,28 +116,28 @@ class EstadisticaServiceTests(unittest.TestCase):
 
         self.assertEqual(
             sum(fila.valor for fila in estadisticas.catalogo_por_grupo),
-            13,
+            100,
         )
         self.assertIn(
             "Core",
             {fila.categoria for fila in estadisticas.catalogo_por_grupo},
         )
-        self.assertEqual(len(estadisticas.comidas_por_objetivo), 7)
+        self.assertEqual(len(estadisticas.comidas_por_objetivo), 25)
         self.assertEqual(
             sum(fila.valor for fila in estadisticas.comidas_por_objetivo),
-            7,
+            42,
         )
 
     def test_ejercicios_mas_mencionados(self) -> None:
         filas = self.calcular().ejercicios_rutinas
 
-        self.assertEqual(len(filas), 28)
-        self.assertEqual(filas[0].nombre, "Plancha")
-        self.assertEqual(filas[0].menciones, 2)
+        self.assertEqual(len(filas), 100)
+        self.assertEqual(filas[0].nombre, "Curl femoral")
+        self.assertEqual(filas[0].menciones, 9)
         self.assertTrue(filas[0].en_catalogo)
         self.assertEqual(
             sum(fila.menciones for fila in filas),
-            29,
+            323,
         )
 
     def test_sin_datos(self) -> None:

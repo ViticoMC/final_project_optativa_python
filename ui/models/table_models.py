@@ -4,7 +4,7 @@ from typing import Any
 
 from PyQt5.QtCore import QAbstractTableModel, QModelIndex, Qt
 
-from app.models import Comida, Ejercicio, Rutina
+from app.models import Comida, Ejercicio, PlantillaRutina, Rutina
 from app.utils import clave_horario, normalizar_texto
 from services.estadistica_service import Distribucion, EjercicioRutina
 
@@ -143,6 +143,25 @@ class RutinaTableModel(BaseTableModel):
         parent=None,
     ) -> None:
         super().__init__(self.COLUMNAS, rutinas, parent)
+
+
+class PlantillaRutinaTableModel(BaseTableModel):
+    COLUMNAS = (
+        Columna("ID", "id_plantilla"),
+        Columna("Grupo muscular", "grupo_muscular"),
+        Columna("Ejercicios", "ejercicios", formato=_formatear_lista),
+        Columna("Series", "series", alineacion=int(Qt.AlignCenter)),
+        Columna("Repeticiones / duración", "repeticiones"),
+        Columna("Nivel", "nivel"),
+        Columna("Descanso", "descanso"),
+    )
+
+    def __init__(
+        self,
+        plantillas: Sequence[PlantillaRutina] = (),
+        parent=None,
+    ) -> None:
+        super().__init__(self.COLUMNAS, plantillas, parent)
 
 
 class EjercicioTableModel(BaseTableModel):

@@ -30,45 +30,45 @@ class EstadisticasTabTests(QtTestCase):
         self.addCleanup(self.tab.deleteLater)
 
     def test_tarjetas_resumen(self) -> None:
-        self.assertEqual(self.tab.valor_rutinas.text(), "10")
+        self.assertEqual(self.tab.valor_rutinas.text(), "60")
         self.assertEqual(
             self.tab.detalle_rutinas.text(),
-            "6 días activos · 1 de descanso",
+            "7 días activos · 1 de descanso",
         )
-        self.assertEqual(self.tab.valor_series.text(), "26")
+        self.assertEqual(self.tab.valor_series.text(), "196")
         self.assertEqual(
             self.tab.detalle_series.text(),
-            "2.6 series por rutina",
+            "3.3 series por rutina",
         )
-        self.assertEqual(self.tab.valor_catalogo.text(), "13")
+        self.assertEqual(self.tab.valor_catalogo.text(), "100")
         self.assertEqual(
             self.tab.detalle_catalogo.text(),
-            "12/28 de las rutinas cubiertos (42.9 %)",
+            "100/100 de las rutinas cubiertos (100.0 %)",
         )
-        self.assertEqual(self.tab.valor_nutricion.text(), "7")
+        self.assertEqual(self.tab.valor_nutricion.text(), "42")
         self.assertEqual(
             self.tab.detalle_nutricion.text(),
-            "16 alimentos únicos · 17 sugerencias",
+            "93 alimentos únicos · 132 sugerencias",
         )
 
     def test_modelos_poblados(self) -> None:
         self.assertEqual(self.tab.modelo_dias.rowCount(), 7)
-        self.assertEqual(self.tab.modelo_grupos.rowCount(), 10)
-        self.assertEqual(self.tab.modelo_niveles.rowCount(), 2)
-        self.assertEqual(self.tab.modelo_series.rowCount(), 9)
-        self.assertEqual(self.tab.modelo_catalogo.rowCount(), 9)
-        self.assertEqual(self.tab.modelo_comidas.rowCount(), 7)
-        self.assertEqual(self.tab.modelo_ejercicios.rowCount(), 28)
+        self.assertEqual(self.tab.modelo_grupos.rowCount(), 14)
+        self.assertEqual(self.tab.modelo_niveles.rowCount(), 3)
+        self.assertEqual(self.tab.modelo_series.rowCount(), 13)
+        self.assertEqual(self.tab.modelo_catalogo.rowCount(), 11)
+        self.assertEqual(self.tab.modelo_comidas.rowCount(), 25)
+        self.assertEqual(self.tab.modelo_ejercicios.rowCount(), 100)
 
     def test_contenido_de_tablas(self) -> None:
         primer_dia = self.tab.modelo_dias.registro_en(0)
         self.assertEqual(primer_dia.categoria, "Lunes")
-        self.assertEqual(primer_dia.valor, 2)
-        self.assertAlmostEqual(primer_dia.porcentaje, 20.0)
+        self.assertEqual(primer_dia.valor, 10)
+        self.assertAlmostEqual(primer_dia.porcentaje, 16.6667, places=4)
 
         primer_ejercicio = self.tab.modelo_ejercicios.registro_en(0)
-        self.assertEqual(primer_ejercicio.nombre, "Plancha")
-        self.assertEqual(primer_ejercicio.menciones, 2)
+        self.assertEqual(primer_ejercicio.nombre, "Curl femoral")
+        self.assertEqual(primer_ejercicio.menciones, 9)
         self.assertTrue(primer_ejercicio.en_catalogo)
 
     def test_exportar_emite_senal(self) -> None:
@@ -105,10 +105,10 @@ class EstadisticasTabTests(QtTestCase):
         comidas.cargar()
         tab.boton_actualizar.click()
 
-        self.assertEqual(tab.valor_rutinas.text(), "10")
-        self.assertEqual(tab.valor_series.text(), "26")
+        self.assertEqual(tab.valor_rutinas.text(), "60")
+        self.assertEqual(tab.valor_series.text(), "196")
         self.assertEqual(tab.modelo_dias.rowCount(), 7)
-        self.assertEqual(tab.modelo_ejercicios.rowCount(), 28)
+        self.assertEqual(tab.modelo_ejercicios.rowCount(), 100)
 
     def test_tab_sin_datos(self) -> None:
         csv_service = CsvService()

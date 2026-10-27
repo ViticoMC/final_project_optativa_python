@@ -1,4 +1,4 @@
-id_rutina,dia,horario,grupo_muscular,ejercicios,series,repeticiones_o_duracion,nivel,descanso
+﻿id_rutina,dia,horario,grupo_muscular,ejercicios,series,repeticiones_o_duracion,nivel,descanso
 R001,Lunes,07:00-08:00,Pecho,Press de banca; Press inclinado con mancuernas; Aperturas,3,12-Aug,Intermedio,60-90 s
 R002,Lunes,18:00-19:00,Tríceps,Extensiones en polea; Press francés; Fondos asistidos,3,12-Oct,Principiante,60 s
 R003,Martes,07:00-08:00,Espalda,Jalón al pecho; Remo con mancuerna; Peso muerto ligero,3,12-Aug,Intermedio,60-120 s
@@ -6,6 +6,56 @@ R004,Martes,18:00-19:00,Bíceps,Curl con mancuernas; Curl martillo; Curl en banc
 R005,Miércoles,07:00-08:00,Piernas,Sentadilla goblet; Prensa; Curl femoral; Elevación de gemelos,3,12-Oct,Principiante,60-120 s
 R006,Jueves,07:00-08:00,Hombros,Press de hombros; Elevaciones laterales; Pájaros,3,12-Aug,Intermedio,60-90 s
 R007,Viernes,07:00-08:00,Cuerpo completo,Sentadilla; Press de pecho; Remo; Plancha,3,8-12 (plancha: 30 s),Principiante,60-90 s
-R008,Sábado,09:00-09:45,Abdomen y cardio,Plancha; Dead bug; Caminata rápida o bicicleta,3,30-45 s / 15-20 min cardio,Principiante,45-60 s
-R009,Domingo,Descanso,Recuperación,Descanso activo opcional: paseo suave y movilidad,0,No aplica,Principiante,No aplica
-R010,Miércoles,18:00-18:30,Movilidad,Movilidad de cadera y hombros; estiramientos suaves,2,20-30 s por ejercicio,Principiante,30 s
+R008,Sábado,09:00-09:45,Abdomen y cardio,Plancha; Dead bug; Caminata rápida; Bicicleta estática,3,30-45 s / 15-20 min cardio,Principiante,45-60 s
+R009,Domingo,Descanso,Recuperación,Caminata rápida; Movilidad de cadera y hombros,0,No aplica,Principiante,No aplica
+R010,Miércoles,18:00-18:30,Movilidad,Movilidad de cadera y hombros; Estiramiento de cadena posterior,2,20-30 s por ejercicio,Principiante,30 s
+R011,Lunes,17:00-18:00,Pecho,Press de banca; Press inclinado con barra; Aperturas; Fondos en paralelas; Press de hombros; Extensiones en polea,4,8-10,Intermedio,90 s
+R012,Lunes,20:00-21:00,Espalda,Jalón al pecho; Remo en polea baja; Remo con mancuerna; Face pull; Curl con mancuernas; Hiperextensiones,4,8-12,Intermedio,75 s
+R013,Martes,06:30-07:30,Piernas,Sentadilla; Prensa; Peso muerto rumano; Curl femoral; Elevación de gemelos; Buenos días,4,8-12,Intermedio,90 s
+R014,Martes,17:00-18:00,Hombros,Press militar; Elevaciones laterales; Pájaros; Elevación frontal; Face pull; Press cerrado,3,10-12,Intermedio,60 s
+R015,Miércoles,06:30-07:30,Espalda,Dominadas asistidas; Remo en T; Remo unilateral en polea; Pull-over en polea alta; Curl en polea; Curl predicador,4,8-12,Intermedio,75 s
+R016,Miércoles,17:00-18:00,Piernas,Sentadilla búlgara; Hip thrust; Extensión de cuádriceps; Curl femoral; Abductores en máquina; Aductores en máquina; Elevación de gemelos,3,10-12,Intermedio,60 s
+R017,Jueves,06:30-07:30,Pecho,Press inclinado con mancuernas; Press declinado; Aperturas; Flexiones; Press de hombros; Extensión sobre cabeza,3,10-12,Intermedio,60 s
+R018,Jueves,17:00-18:00,Cuerpo completo,Peso muerto ligero; Press de banca; Remo; Sentadilla goblet; Plancha; Farmer carry,4,6-10,Intermedio,90 s
+R019,Viernes,06:30-07:30,Brazos,Curl con mancuernas; Curl martillo; Curl concentrado; Extensiones en polea; Press francés; Fondos asistidos,3,10-15,Intermedio,60 s
+R020,Viernes,17:00-18:00,Glúteos,Hip thrust; Peso muerto sumo; Step up; Patada de glúteo; Abducción de cadera con banda; Plancha lateral,4,10-12,Intermedio,75 s
+R021,Lunes,06:30-07:30,Pecho,Press de banca; Press inclinado con barra; Fondos en paralelas; Aperturas; Press militar; Press cerrado,5,4-6,Avanzado,120 s
+R022,Martes,17:00-18:00,Espalda,Peso muerto convencional; Dominadas asistidas; Remo en T; Remo unilateral en polea; Face pull; Curl inverso,5,4-6,Avanzado,120 s
+R023,Miércoles,17:00-18:00,Piernas,Sentadilla; Prensa; Peso muerto rumano; Sentadilla búlgara; Extensión de cuádriceps; Elevación de gemelos,5,5-8,Avanzado,120 s
+R024,Jueves,17:00-18:00,Hombros,Press militar; Press Arnold; Elevaciones laterales en polea; Pájaros en polea; Remo al mentón; Face pull,4,8-10,Avanzado,90 s
+R025,Viernes,17:00-18:00,Cuerpo completo,Clean and press; Thruster; Kettlebell swing; Box jump; Remo ergómetro; Farmer carry,4,5-8,Avanzado,120 s
+R026,Sábado,09:00-09:45,Piernas,Sentadilla frontal; Peso muerto sumo; Zancadas; Curl femoral; Elevación de talones sentado; Rueda abdominal,4,8-10,Avanzado,90 s
+R027,Sábado,12:00-13:00,Cardio,Sprints; Burpees; Salto de comba; Mountain climbers; Battle ropes; Sentadilla con salto,5,30-45 s,Avanzado,60 s
+R028,Domingo,09:00-09:45,Movilidad,Yoga suave; Movilidad torácica; Estiramiento de psoas; Movilidad de tobillo; Foam roller; Estiramiento de cadena posterior,2,30-45 s,Principiante,30 s
+R029,Lunes,12:00-13:00,Pecho,Press de pecho; Press inclinado con mancuernas; Aperturas; Flexiones; Plancha,3,10-12,Principiante,60 s
+R030,Martes,12:00-13:00,Espalda,Jalón al pecho; Remo en polea baja; Remo con mancuerna; Face pull; Curl con mancuernas,3,10-12,Principiante,60 s
+R031,Miércoles,12:00-13:00,Piernas,Sentadilla goblet; Prensa; Curl femoral; Elevación de gemelos; Puente de glúteo,3,10-15,Principiante,60 s
+R032,Jueves,12:00-13:00,Hombros,Press de hombros; Elevaciones laterales; Pájaros; Elevación frontal; Face pull,3,10-12,Principiante,60 s
+R033,Viernes,12:00-13:00,Brazos,Curl con mancuernas; Curl martillo; Curl en polea; Extensiones en polea; Extensión sobre cabeza; Fondos en banco,3,10-15,Principiante,45 s
+R034,Sábado,12:00-13:00,Glúteos,Puente de glúteo; Hip thrust; Patada de glúteo; Abducción de cadera con banda; Sentadilla goblet; Plancha lateral,3,12-15,Principiante,45 s
+R035,Domingo,09:00-09:45,Cardio,Caminata rápida; Bicicleta estática; Elíptica; Movilidad de cadera y hombros; Estiramiento de cadena posterior,2,20-30 min,Principiante,45 s
+R036,Lunes,18:00-19:00,Cuerpo completo,Sentadilla goblet; Press de banca; Remo en polea baja; Press de hombros; Curl femoral; Plancha,3,8-12,Intermedio,75 s
+R037,Martes,18:00-19:00,Cuerpo completo,Peso muerto rumano; Press inclinado con mancuernas; Jalón al pecho; Zancadas; Elevaciones laterales; Dead bug,3,8-12,Intermedio,75 s
+R038,Jueves,18:00-19:00,Cuerpo completo,Prensa; Remo con mancuerna; Press de hombros; Curl femoral; Curl con mancuernas; Extensiones en polea,3,10-12,Intermedio,60 s
+R039,Sábado,09:00-09:45,Cuerpo completo,Sentadilla; Press de banca; Peso muerto convencional; Press militar; Remo en T; Rueda abdominal,4,5-8,Avanzado,120 s
+R040,Martes,09:00-09:45,Core,Plancha; Plancha lateral; Pallof press; Hollow hold; Bird dog; Mountain climbers,3,30-45 s,Intermedio,45 s
+R041,Jueves,09:00-09:45,Core,Rueda abdominal; Crunch en polea; Elevación de piernas; Dead bug; Pallof press; Plancha lateral,3,12-15,Intermedio,45 s
+R042,Viernes,09:00-09:45,Cardio,Remo ergómetro; Bicicleta estática; Cinta inclinada; Elíptica; Caminata rápida; Estiramiento de cadena posterior,2,20-30 min,Intermedio,60 s
+R043,Sábado,12:00-13:00,Core,Rueda abdominal; Hollow hold; Elevación de piernas; Plancha lateral; Pallof press; Mountain climbers,4,30-45 s,Avanzado,45 s
+R044,Domingo,09:00-09:45,Cardio,Caminata rápida; Bicicleta estática; Movilidad de tobillo; Estiramiento de psoas; Foam roller,2,25-35 min,Principiante,45 s
+R045,Lunes,20:00-21:00,Movilidad,Movilidad de cadera y hombros; Movilidad torácica; Estiramiento de psoas; Movilidad de tobillo; Foam roller,2,30-45 s,Principiante,30 s
+R046,Miércoles,20:00-21:00,Movilidad,Yoga suave; Estiramiento de cadena posterior; Movilidad torácica; Estiramiento de psoas; Foam roller,2,30-60 s,Principiante,30 s
+R047,Viernes,20:00-21:00,Movilidad,Movilidad de cadera y hombros; Movilidad de tobillo; Yoga suave; Estiramiento de cadena posterior; Foam roller,2,30-45 s,Principiante,30 s
+R048,Domingo,17:00-18:00,Movilidad,Yoga suave; Movilidad torácica; Movilidad de cadera y hombros; Estiramiento de psoas; Estiramiento de cadena posterior; Foam roller,3,45-60 s,Intermedio,30 s
+R049,Lunes,09:00-09:45,Cuerpo completo,Sentadilla goblet; Press de pecho; Remo en polea baja; Press de hombros; Puente de glúteo; Plancha,3,10-12,Principiante,60 s
+R050,Miércoles,09:00-09:45,Cuerpo completo,Prensa; Jalón al pecho; Flexiones; Curl femoral; Elevaciones laterales; Dead bug,3,10-12,Principiante,60 s
+R051,Viernes,12:00-13:00,Cuerpo completo,Sentadilla goblet; Remo con mancuerna; Press de hombros; Hip thrust; Curl con mancuernas; Extensiones en polea,3,10-12,Principiante,60 s
+R052,Sábado,17:00-18:00,Cuerpo completo,Kettlebell swing; Press de banca; Remo en T; Zancadas; Face pull; Farmer carry,4,8-10,Intermedio,75 s
+R053,Martes,20:00-21:00,Espalda,Peso muerto ligero; Dominadas asistidas; Remo en T; Remo unilateral en polea; Face pull; Curl inverso,4,8-10,Intermedio,90 s
+R054,Jueves,20:00-21:00,Pecho,Press de banca; Press inclinado con barra; Aperturas; Fondos en paralelas; Pullover con mancuerna; Press banca con mancuernas,4,8-10,Intermedio,90 s
+R055,Sábado,07:00-08:00,Piernas,Sentadilla frontal; Prensa; Peso muerto rumano; Zancadas; Extensión de cuádriceps; Elevación de gemelos,5,6-8,Avanzado,120 s
+R056,Domingo,12:00-13:00,Glúteos,Hip thrust; Peso muerto sumo; Step up; Patada de glúteo; Abducción de cadera con banda; Plancha,4,10-12,Intermedio,75 s
+R057,Lunes,20:00-21:00,Hombros,Press de hombros; Press Arnold; Elevaciones laterales; Pájaros; Face pull; Remo al mentón,3,10-12,Intermedio,60 s
+R058,Miércoles,18:00-19:00,Brazos,Curl martillo; Curl en banco inclinado; Curl martillo con cuerda; Press francés; Fondos asistidos; Patada de tríceps,3,10-15,Intermedio,60 s
+R059,Viernes,18:00-19:00,Piernas,Sentadilla búlgara; Peso muerto rumano; Extensión de cuádriceps; Curl femoral; Abductores en máquina; Elevación de talones sentado,4,8-12,Intermedio,75 s
+R060,Sábado,18:00-19:00,Cuerpo completo,Clean and press; Thruster; Box jump; Sled push; Battle ropes; Turkish get-up,4,5-8,Avanzado,120 s

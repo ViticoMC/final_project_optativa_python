@@ -4,10 +4,11 @@ from pathlib import Path
 from app.config import (
     COLUMNAS_EJERCICIO,
     COLUMNAS_NUTRICION,
+    COLUMNAS_PLANTILLA,
     COLUMNAS_RUTINA,
 )
 from app.exceptions import ExportError
-from app.models import Comida, Ejercicio, Rutina
+from app.models import Comida, Ejercicio, PlantillaRutina, Rutina
 from services.csv_service import CsvService
 from services.estadistica_service import Estadisticas
 
@@ -56,6 +57,24 @@ class ExportService:
             COLUMNAS_NUTRICION,
             [comida.to_row() for comida in comidas],
         )
+
+    def exportar_plantillas(
+        self,
+        ruta: str | Path,
+        plantillas: Iterable[PlantillaRutina],
+    ) -> Path:
+        return self._exportar(
+            ruta,
+            COLUMNAS_PLANTILLA,
+            [plantilla.to_row() for plantilla in plantillas],
+        )
+
+    def exportar_comidas_personales(
+        self,
+        ruta: str | Path,
+        comidas: Iterable[Comida],
+    ) -> Path:
+        return self.exportar_comidas(ruta, comidas)
 
     def exportar_estadisticas(
         self,

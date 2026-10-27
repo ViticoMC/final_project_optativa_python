@@ -45,9 +45,9 @@ class RutinaServiceTests(unittest.TestCase):
     def test_carga_datos_reales(self) -> None:
         total = self.servicio.cargar()
 
-        self.assertEqual(total, 10)
-        self.assertEqual(self.servicio.total(), 10)
-        self.assertEqual(len(self.servicio.todas()), 10)
+        self.assertEqual(total, 60)
+        self.assertEqual(self.servicio.total(), 60)
+        self.assertEqual(len(self.servicio.todas()), 60)
         self.assertEqual(self.servicio.ruta, RUTINAS_PATH)
         self.assertEqual(self.servicio.por_id("R001").grupo_muscular, "Pecho")
         self.assertIsNone(self.servicio.por_id("R999"))
@@ -58,7 +58,7 @@ class RutinaServiceTests(unittest.TestCase):
         self.assertEqual(self.servicio.dias(), list(DIAS))
         self.assertEqual(
             self.servicio.niveles(),
-            ["Principiante", "Intermedio"],
+            ["Principiante", "Intermedio", "Avanzado"],
         )
         self.assertIn("Bíceps", self.servicio.grupos())
         self.assertIn("Movilidad", self.servicio.grupos())
@@ -73,7 +73,10 @@ class RutinaServiceTests(unittest.TestCase):
         valores = self.servicio.valores_unicos("nivel")
 
         self.assertEqual(valores, sorted(set(valores), key=normalizar_texto))
-        self.assertEqual(set(valores), {"Principiante", "Intermedio"})
+        self.assertEqual(
+            set(valores),
+            {"Principiante", "Intermedio", "Avanzado"},
+        )
 
     def test_campo_desconocido(self) -> None:
         with self.assertRaises(ValueError):
@@ -83,13 +86,14 @@ class RutinaServiceTests(unittest.TestCase):
         self.servicio.cargar()
 
         casos = (
-            ({}, 10),
-            ({"dia": "Lunes"}, 2),
-            ({"grupo": "Pecho"}, 1),
-            ({"nivel": "Intermedio"}, 3),
-            ({"nivel": "Principiante"}, 7),
-            ({"horario": "18:00-19:00"}, 2),
-            ({"dia": "Domingo"}, 1),
+            ({}, 60),
+            ({"dia": "Lunes"}, 10),
+            ({"grupo": "Pecho"}, 6),
+            ({"nivel": "Intermedio"}, 27),
+            ({"nivel": "Principiante"}, 22),
+            ({"nivel": "Avanzado"}, 11),
+            ({"horario": "18:00-19:00"}, 8),
+            ({"dia": "Domingo"}, 6),
         )
         for filtros, esperado in casos:
             with self.subTest(filtros=filtros):
@@ -102,11 +106,33 @@ class RutinaServiceTests(unittest.TestCase):
         self.servicio.cargar()
 
         casos = (
-            ("triceps", ["R002"]),
-            ("press banca", ["R001"]),
-            ("lunes pecho", ["R001"]),
+            ("triceps", ["R002", "R058"]),
+            (
+                "press banca",
+                ["R001", "R011", "R018", "R021", "R036", "R039", "R052", "R054"],
+            ),
+            (
+                "lunes pecho",
+                ["R001", "R011", "R012", "R021", "R029", "R049"],
+            ),
             ("R010", ["R010"]),
-            ("plancha", ["R007", "R008"]),
+            (
+                "plancha",
+                [
+                    "R007",
+                    "R008",
+                    "R018",
+                    "R020",
+                    "R029",
+                    "R034",
+                    "R036",
+                    "R040",
+                    "R041",
+                    "R043",
+                    "R049",
+                    "R056",
+                ],
+            ),
             ("no existe", []),
         )
         for texto, esperados in casos:
@@ -122,19 +148,19 @@ class RutinaServiceTests(unittest.TestCase):
 
         self.assertEqual(
             [r.id_rutina for r in self.servicio.filtrar(dia="Lunes", nivel="Intermedio")],
-            ["R001"],
+            ["R001", "R011", "R012", "R036", "R057"],
         )
         self.assertEqual(
             [r.id_rutina for r in self.servicio.filtrar(dia="Lunes", nivel="Principiante")],
-            ["R002"],
+            ["R002", "R029", "R045", "R049"],
         )
         self.assertEqual(
             [r.id_rutina for r in self.servicio.filtrar(dia="Martes", grupo="Espalda")],
-            ["R003"],
+            ["R003", "R022", "R030", "R053"],
         )
         self.assertEqual(
             [r.id_rutina for r in self.servicio.filtrar(dia="Lunes", horario="18:00-19:00")],
-            ["R002"],
+            ["R002", "R036"],
         )
         self.assertEqual(
             self.servicio.filtrar(dia="Lunes", grupo="Piernas"),
@@ -146,7 +172,7 @@ class RutinaServiceTests(unittest.TestCase):
 
         self.assertEqual(
             [r.id_rutina for r in self.servicio.filtrar(dia="miercoles")],
-            ["R005", "R010"],
+            ["R005", "R010", "R015", "R016", "R023", "R031", "R046", "R050", "R058"],
         )
         self.assertEqual(
             [r.id_rutina for r in self.servicio.filtrar(grupo="BICEPS")],
@@ -159,10 +185,14 @@ class RutinaServiceTests(unittest.TestCase):
         self.assertEqual(
             self.servicio.horarios(),
             [
+                "06:30-07:30",
                 "07:00-08:00",
                 "09:00-09:45",
+                "12:00-13:00",
+                "17:00-18:00",
                 "18:00-18:30",
                 "18:00-19:00",
+                "20:00-21:00",
                 "Descanso",
             ],
         )
@@ -196,7 +226,7 @@ class RutinaServiceTests(unittest.TestCase):
 
         self.assertIn("series", str(contexto.exception))
         self.assertIn("series_invalidas.csv", str(contexto.exception))
-        self.assertEqual(self.servicio.total(), 10)
+        self.assertEqual(self.servicio.total(), 60)
         self.assertEqual(self.servicio.ruta, RUTINAS_PATH)
 
     def test_archivo_inexistente_conserva_datos_anteriores(self) -> None:
@@ -205,7 +235,7 @@ class RutinaServiceTests(unittest.TestCase):
         with self.assertRaises(CsvFormatError):
             self.servicio.cargar(self.directorio / "no_existe.csv")
 
-        self.assertEqual(self.servicio.total(), 10)
+        self.assertEqual(self.servicio.total(), 60)
         self.assertEqual(self.servicio.ruta, RUTINAS_PATH)
 
     def test_cargar_archivo_sin_registros(self) -> None:

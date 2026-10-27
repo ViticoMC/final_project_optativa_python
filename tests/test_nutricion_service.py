@@ -41,9 +41,9 @@ class NutricionServiceTests(unittest.TestCase):
     def test_carga_datos_reales(self) -> None:
         total = self.servicio.cargar()
 
-        self.assertEqual(total, 7)
-        self.assertEqual(self.servicio.total(), 7)
-        self.assertEqual(len(self.servicio.todos()), 7)
+        self.assertEqual(total, 42)
+        self.assertEqual(self.servicio.total(), 42)
+        self.assertEqual(len(self.servicio.todos()), 42)
         self.assertEqual(self.servicio.ruta, NUTRICION_PATH)
         self.assertEqual(self.servicio.por_id("D001").comida, "Desayuno")
         self.assertIsNone(self.servicio.por_id("D999"))
@@ -75,7 +75,7 @@ class NutricionServiceTests(unittest.TestCase):
                 "Durante el día",
             ],
         )
-        self.assertEqual(len(self.servicio.objetivos()), 7)
+        self.assertEqual(len(self.servicio.objetivos()), 25)
         self.assertIn("Hidratación", self.servicio.objetivos())
         self.assertIn("Recuperación", self.servicio.objetivos())
 
@@ -83,14 +83,14 @@ class NutricionServiceTests(unittest.TestCase):
         self.servicio.cargar()
 
         casos = (
-            ({}, 7),
-            ({"comida": "Almuerzo"}, 1),
-            ({"comida": "Cena"}, 1),
-            ({"horario": "07:30"}, 1),
-            ({"horario": "Durante el día"}, 1),
-            ({"objetivo": "Hidratación"}, 1),
+            ({}, 42),
+            ({"comida": "Almuerzo"}, 6),
+            ({"comida": "Cena"}, 6),
+            ({"horario": "07:30"}, 6),
+            ({"horario": "Durante el día"}, 6),
+            ({"objetivo": "Hidratación"}, 3),
             ({"objetivo": "Recuperación"}, 1),
-            ({"objetivo": "Proteína y micronutrientes"}, 1),
+            ({"objetivo": "Proteína y micronutrientes"}, 2),
         )
         for filtros, esperado in casos:
             with self.subTest(filtros=filtros):
@@ -123,18 +123,18 @@ class NutricionServiceTests(unittest.TestCase):
             horario="durante el dia",
         )
 
-        self.assertEqual(len(resultado), 1)
+        self.assertEqual(len(resultado), 6)
         self.assertEqual(resultado[0].id_plan, "D006")
 
     def test_busqueda_texto(self) -> None:
         self.servicio.cargar()
 
         casos = (
-            ("avena", ["D001"]),
+            ("avena", ["D001", "D011", "D017", "D039"]),
             ("avena platano", ["D001"]),
-            ("hidratacion", ["D006"]),
+            ("hidratacion", ["D006", "D033", "D034", "D035", "D036", "D037"]),
             ("suplementos", ["D007"]),
-            ("fruta", ["D002", "D004"]),
+            ("fruta", ["D002", "D004", "D010", "D014"]),
             ("no existe", []),
         )
         for texto, esperados in casos:
@@ -150,8 +150,8 @@ class NutricionServiceTests(unittest.TestCase):
 
         alimentos = self.servicio.alimentos_unicos()
 
-        self.assertEqual(len(alimentos), 16)
-        self.assertEqual(self.servicio.total_sugerencias(), 17)
+        self.assertEqual(len(alimentos), 93)
+        self.assertEqual(self.servicio.total_sugerencias(), 132)
         self.assertEqual(
             sum(
                 1
@@ -176,7 +176,7 @@ class NutricionServiceTests(unittest.TestCase):
             self.servicio.cargar(ruta)
 
         self.assertIn("comida", str(contexto.exception))
-        self.assertEqual(self.servicio.total(), 7)
+        self.assertEqual(self.servicio.total(), 42)
         self.assertEqual(self.servicio.ruta, NUTRICION_PATH)
 
     def test_cargar_archivo_sin_registros(self) -> None:

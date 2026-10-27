@@ -69,7 +69,7 @@ class EjerciciosTabTests(QtTestCase):
             self.assertEqual(textos.count(nivel), 1)
 
     def test_catalogo_inicial_y_detalle(self) -> None:
-        self.assertEqual(self.tab.modelo.rowCount(), 13)
+        self.assertEqual(self.tab.modelo.rowCount(), 100)
         self.assertEqual(self.tab.detalle_titulo.text(), "Press de banca")
         self.assertIn("Pecho", self.tab.detalle_info.text())
         self.assertIn("técnica correcta", self.tab.detalle_nota.text())
@@ -77,17 +77,20 @@ class EjerciciosTabTests(QtTestCase):
     def test_cobertura_mostrada(self) -> None:
         texto = self.tab.etiqueta_cobertura.text()
 
-        self.assertIn("12/28", texto)
-        self.assertIn("42.9", texto)
-        self.assertIn("Prensa", self.tab.etiqueta_cobertura.toolTip())
+        self.assertIn("100/100", texto)
+        self.assertIn("100.0", texto)
+        self.assertIn(
+            "Todos los ejercicios de las rutinas están en el catálogo",
+            self.tab.etiqueta_cobertura.toolTip(),
+        )
 
     def test_filtro_por_grupo(self) -> None:
         self.seleccionar(self.tab.combo_grupo, "Pecho")
 
-        self.assertEqual(self.tab.modelo.rowCount(), 2)
+        self.assertEqual(self.tab.modelo.rowCount(), 10)
         self.assertEqual(
             self.tab.etiqueta_estado.text(),
-            "Mostrando 2 de 13 ejercicios.",
+            "Mostrando 10 de 100 ejercicios.",
         )
         self.assertEqual(self.tab.detalle_titulo.text(), "Press de banca")
 
@@ -109,21 +112,29 @@ class EjerciciosTabTests(QtTestCase):
 
     def test_filtro_por_patron_y_equipo(self) -> None:
         self.seleccionar(self.tab.combo_patron, "Empuje horizontal")
-        self.assertEqual(self.tab.modelo.rowCount(), 1)
+        self.assertEqual(self.tab.modelo.rowCount(), 5)
         self.assertEqual(self.tab.detalle_titulo.text(), "Press de banca")
 
         self.seleccionar(self.tab.combo_patron, "")
         self.seleccionar(self.tab.combo_equipo, "Polea")
-        ids = [
+        ids = {
             self.tab.modelo.registro_en(fila).id_ejercicio
             for fila in range(self.tab.modelo.rowCount())
-        ]
-        self.assertEqual(ids, ["E003", "E009"])
+        }
+        self.assertEqual(len(ids), 9)
+        self.assertIn("E003", ids)
+        self.assertIn("E009", ids)
+        self.assertTrue(
+            all(
+                self.tab.modelo.registro_en(fila).equipamiento == "Polea"
+                for fila in range(self.tab.modelo.rowCount())
+            )
+        )
 
     def test_busqueda_y_ficha(self) -> None:
         self.tab.busqueda.setText("lumbar")
 
-        self.assertEqual(self.tab.modelo.rowCount(), 1)
+        self.assertEqual(self.tab.modelo.rowCount(), 6)
         self.assertEqual(self.tab.detalle_titulo.text(), "Dead bug")
         self.assertIn("lumbar", self.tab.detalle_nota.text())
 
@@ -133,7 +144,7 @@ class EjerciciosTabTests(QtTestCase):
         self.assertEqual(self.tab.modelo.rowCount(), 0)
         self.assertEqual(
             self.tab.etiqueta_estado.text(),
-            "Sin coincidencias. 0 de 13 ejercicios.",
+            "Sin coincidencias. 0 de 100 ejercicios.",
         )
         self.assertEqual(
             self.tab.detalle_titulo.text(),
@@ -146,13 +157,17 @@ class EjerciciosTabTests(QtTestCase):
 
         self.tab.boton_limpiar.click()
 
-        self.assertEqual(self.tab.modelo.rowCount(), 13)
+        self.assertEqual(self.tab.modelo.rowCount(), 100)
         self.assertEqual(self.tab.combo_grupo.currentIndex(), 0)
         self.assertEqual(self.tab.busqueda.text(), "")
         self.assertEqual(
             self.tab.etiqueta_estado.text(),
-            "13 ejercicios cargados.",
+            "100 ejercicios cargados.",
         )
+
+    def test_atajos_de_busqueda_y_filtros(self) -> None:
+        self.assertEqual(self.tab.atajo_buscar.key().toString(), "Ctrl+F")
+        self.assertEqual(self.tab.atajo_limpiar.key().toString(), "Ctrl+L")
 
     def test_exportar_emite_senal_y_respeta_filtros(self) -> None:
         self.seleccionar(self.tab.combo_grupo, "Pecho")
@@ -163,7 +178,7 @@ class EjerciciosTabTests(QtTestCase):
 
         self.assertEqual(recibido, [True])
         visibles = self.tab.registros_visibles()
-        self.assertEqual(len(visibles), 2)
+        self.assertEqual(len(visibles), 10)
         self.assertEqual(
             {ejercicio.grupo_muscular for ejercicio in visibles},
             {"Pecho"},

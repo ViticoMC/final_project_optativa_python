@@ -98,10 +98,11 @@ class RutinaTests(unittest.TestCase):
         )
         rutinas = [Rutina.from_row(fila) for fila in filas]
 
-        self.assertEqual(len(rutinas), 10)
-        self.assertEqual(rutinas[-2].series, 0)
-        self.assertTrue(rutinas[-2].es_descanso)
-        self.assertEqual(sum(rutina.series for rutina in rutinas), 26)
+        self.assertEqual(len(rutinas), 60)
+        descansos = [rutina for rutina in rutinas if rutina.es_descanso]
+        self.assertEqual(len(descansos), 1)
+        self.assertEqual(descansos[0].series, 0)
+        self.assertEqual(sum(rutina.series for rutina in rutinas), 196)
 
 
 class EjercicioTests(unittest.TestCase):
@@ -130,7 +131,7 @@ class EjercicioTests(unittest.TestCase):
         )
         ejercicios = [Ejercicio.from_row(fila) for fila in filas]
 
-        self.assertEqual(len(ejercicios), 13)
+        self.assertEqual(len(ejercicios), 100)
         self.assertEqual(ejercicios[0].nombre, "Press de banca")
 
 
@@ -157,7 +158,7 @@ class ComidaTests(unittest.TestCase):
         )
         comidas = [Comida.from_row(fila) for fila in filas]
 
-        self.assertEqual(len(comidas), 7)
+        self.assertEqual(len(comidas), 42)
         self.assertEqual(comidas[2].comida, "Almuerzo")
         self.assertEqual(len(comidas[2].alimentos), 3)
 

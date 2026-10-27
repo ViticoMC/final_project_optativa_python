@@ -25,7 +25,7 @@ class NutricionTabTests(QtTestCase):
     def test_combos_poblados(self) -> None:
         self.assertEqual(self.tab.combo_comida.count(), 8)
         self.assertEqual(self.tab.combo_horario.count(), 8)
-        self.assertEqual(self.tab.combo_objetivo.count(), 8)
+        self.assertEqual(self.tab.combo_objetivo.count(), 26)
 
         placeholders = (
             (self.tab.combo_comida, "Todas las comidas"),
@@ -56,7 +56,7 @@ class NutricionTabTests(QtTestCase):
         )
 
     def test_plan_inicial_y_detalle(self) -> None:
-        self.assertEqual(self.tab.modelo.rowCount(), 7)
+        self.assertEqual(self.tab.modelo.rowCount(), 42)
         self.assertEqual(self.tab.detalle_titulo.text(), "Desayuno")
         self.assertIn("D001", self.tab.detalle_info.text())
         self.assertIn("07:30", self.tab.detalle_info.text())
@@ -66,25 +66,25 @@ class NutricionTabTests(QtTestCase):
     def test_resumen_del_plan(self) -> None:
         texto = self.tab.etiqueta_resumen.text()
 
-        self.assertIn("7 comidas", texto)
-        self.assertIn("17 sugerencias", texto)
-        self.assertIn("16 alimentos únicos", texto)
+        self.assertIn("42 comidas", texto)
+        self.assertIn("132 sugerencias", texto)
+        self.assertIn("93 alimentos únicos", texto)
         self.assertIn("plátano", self.tab.etiqueta_resumen.toolTip())
 
     def test_filtro_por_comida(self) -> None:
         self.seleccionar(self.tab.combo_comida, "Almuerzo")
 
-        self.assertEqual(self.tab.modelo.rowCount(), 1)
+        self.assertEqual(self.tab.modelo.rowCount(), 6)
         self.assertEqual(
             self.tab.etiqueta_estado.text(),
-            "Mostrando 1 de 7 comidas.",
+            "Mostrando 6 de 42 comidas.",
         )
         self.assertEqual(self.tab.detalle_titulo.text(), "Almuerzo")
 
     def test_filtro_por_horario_especial(self) -> None:
         self.seleccionar(self.tab.combo_horario, "Durante el día")
 
-        self.assertEqual(self.tab.modelo.rowCount(), 1)
+        self.assertEqual(self.tab.modelo.rowCount(), 6)
         self.assertEqual(self.tab.modelo.registro_en(0).id_plan, "D006")
 
     def test_filtro_por_objetivo(self) -> None:
@@ -97,15 +97,21 @@ class NutricionTabTests(QtTestCase):
     def test_busqueda_por_alimento(self) -> None:
         self.tab.busqueda.setText("fruta")
 
-        ids = [
+        ids = {
             self.tab.modelo.registro_en(fila).id_plan
             for fila in range(self.tab.modelo.rowCount())
-        ]
-        self.assertEqual(ids, ["D002", "D004"])
+        }
+        self.assertEqual(ids, {"D002", "D004", "D010", "D014"})
 
         self.tab.busqueda.setText("avena")
-        self.assertEqual(self.tab.modelo.rowCount(), 1)
-        self.assertEqual(self.tab.modelo.registro_en(0).id_plan, "D001")
+        self.assertEqual(self.tab.modelo.rowCount(), 4)
+        self.assertIn(
+            "D001",
+            {
+                self.tab.modelo.registro_en(fila).id_plan
+                for fila in range(self.tab.modelo.rowCount())
+            },
+        )
 
     def test_busqueda_sin_resultados(self) -> None:
         self.tab.busqueda.setText("no existe")
@@ -113,7 +119,7 @@ class NutricionTabTests(QtTestCase):
         self.assertEqual(self.tab.modelo.rowCount(), 0)
         self.assertEqual(
             self.tab.etiqueta_estado.text(),
-            "Sin coincidencias. 0 de 7 comidas.",
+            "Sin coincidencias. 0 de 42 comidas.",
         )
         self.assertEqual(
             self.tab.detalle_titulo.text(),
@@ -138,13 +144,17 @@ class NutricionTabTests(QtTestCase):
 
         self.tab.boton_limpiar.click()
 
-        self.assertEqual(self.tab.modelo.rowCount(), 7)
+        self.assertEqual(self.tab.modelo.rowCount(), 42)
         self.assertEqual(self.tab.combo_comida.currentIndex(), 0)
         self.assertEqual(self.tab.busqueda.text(), "")
         self.assertEqual(
             self.tab.etiqueta_estado.text(),
-            "7 comidas cargadas.",
+            "42 comidas cargadas.",
         )
+
+    def test_atajos_de_busqueda_y_filtros(self) -> None:
+        self.assertEqual(self.tab.atajo_buscar.key().toString(), "Ctrl+F")
+        self.assertEqual(self.tab.atajo_limpiar.key().toString(), "Ctrl+L")
 
     def test_exportar_emite_senal_y_respeta_filtros(self) -> None:
         self.seleccionar(self.tab.combo_comida, "Cena")
@@ -155,8 +165,8 @@ class NutricionTabTests(QtTestCase):
 
         self.assertEqual(recibido, [True])
         visibles = self.tab.registros_visibles()
-        self.assertEqual(len(visibles), 1)
-        self.assertEqual(visibles[0].comida, "Cena")
+        self.assertEqual(len(visibles), 6)
+        self.assertEqual({comida.comida for comida in visibles}, {"Cena"})
 
     def test_refrescar_datos_reinicia_filtros(self) -> None:
         self.seleccionar(self.tab.combo_comida, "Cena")
@@ -164,7 +174,7 @@ class NutricionTabTests(QtTestCase):
 
         self.tab.refrescar_datos(reiniciar_filtros=True)
 
-        self.assertEqual(self.tab.modelo.rowCount(), 7)
+        self.assertEqual(self.tab.modelo.rowCount(), 42)
         self.assertEqual(self.tab.combo_comida.currentIndex(), 0)
         self.assertEqual(self.tab.busqueda.text(), "")
 

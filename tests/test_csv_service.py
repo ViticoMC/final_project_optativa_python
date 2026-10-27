@@ -47,9 +47,9 @@ class CsvServiceLecturaTests(unittest.TestCase):
             NUTRICION_PATH, COLUMNAS_NUTRICION, columna_id="id_plan"
         )
 
-        self.assertEqual(len(rutinas), 10)
-        self.assertEqual(len(ejercicios), 13)
-        self.assertEqual(len(comidas), 7)
+        self.assertEqual(len(rutinas), 60)
+        self.assertEqual(len(ejercicios), 100)
+        self.assertEqual(len(comidas), 42)
         self.assertEqual(rutinas[0]["id_rutina"], "R001")
         self.assertEqual(len(rutinas[0]), 9)
 

@@ -76,6 +76,57 @@ class Rutina:
 
 
 @dataclass(frozen=True, slots=True)
+class PlantillaRutina:
+    id_plantilla: str
+    grupo_muscular: str
+    ejercicios: tuple[str, ...]
+    series: int
+    repeticiones: str
+    nivel: str
+    descanso: str
+
+    @classmethod
+    def from_row(cls, fila: Mapping[str, object]) -> "PlantillaRutina":
+        id_plantilla = _campo(fila, "id_plantilla", "Plantilla")
+        contexto = f"Plantilla {id_plantilla}"
+        series_texto = _campo(fila, "series", contexto)
+        series = a_entero(series_texto, defecto=-1)
+        if series <= 0:
+            raise DataValidationError(
+                f"{contexto}: el valor de series no es válido: {series_texto!r}."
+            )
+        ejercicios = dividir_lista(_campo(fila, "ejercicios", contexto))
+        if not ejercicios:
+            raise DataValidationError(
+                f"{contexto}: debe incluir al menos un ejercicio."
+            )
+        return cls(
+            id_plantilla=id_plantilla,
+            grupo_muscular=_campo(fila, "grupo_muscular", contexto),
+            ejercicios=ejercicios,
+            series=series,
+            repeticiones=_campo(fila, "repeticiones_o_duracion", contexto),
+            nivel=_campo(fila, "nivel", contexto),
+            descanso=_campo(fila, "descanso", contexto),
+        )
+
+    @property
+    def num_ejercicios(self) -> int:
+        return len(self.ejercicios)
+
+    def to_row(self) -> dict[str, str]:
+        return {
+            "id_plantilla": self.id_plantilla,
+            "grupo_muscular": self.grupo_muscular,
+            "ejercicios": "; ".join(self.ejercicios),
+            "series": str(self.series),
+            "repeticiones_o_duracion": self.repeticiones,
+            "nivel": self.nivel,
+            "descanso": self.descanso,
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class Ejercicio:
     id_ejercicio: str
     nombre: str

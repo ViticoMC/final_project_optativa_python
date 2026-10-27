@@ -1,4 +1,4 @@
-id_ejercicio,nombre,grupo_muscular,patron_movimiento,equipamiento,nivel_sugerido,nota_tecnica
+﻿id_ejercicio,nombre,grupo_muscular,patron_movimiento,equipamiento,nivel_sugerido,nota_tecnica
 E001,Press de banca,Pecho,Empuje horizontal,Barra o mancuernas,Principiante-intermedio,Usar carga controlable y técnica correcta
 E002,Press inclinado con mancuernas,Pecho,Empuje inclinado,Mancuernas y banco,Principiante-intermedio,No forzar el rango de movimiento
 E003,Jalón al pecho,Espalda,Tracción vertical,Polea,Principiante-intermedio,Evitar balancear el torso
@@ -12,3 +12,90 @@ E010,Plancha,Core,Estabilidad del tronco,Colchoneta,Principiante,Detenerse si se
 E011,Dead bug,Core,Estabilidad y coordinación,Colchoneta,Principiante,Mantener la zona lumbar controlada
 E012,Caminata rápida,Cardio,Actividad aeróbica,Ninguno,Principiante,Ajustar el ritmo a la condición física
 E013,Movilidad de cadera y hombros,Movilidad,Movilidad articular,Ninguno,Principiante,No realizar movimientos dolorosos
+E014,Aperturas,Pecho,Aislamiento,Mancuernas o polea,Principiante-intermedio,Abrir con control sin perder la curvatura natural
+E015,Press de pecho,Pecho,Empuje horizontal,Barra o máquina,Principiante,Mantener las escápulas retraídas
+E016,Press declinado,Pecho,Empuje declinado,Barra o máquina,Intermedio,No rebotar la barra en el pecho
+E017,Fondos en paralelas,Pecho,Empuje vertical,Paralelas,Intermedio,Inclinar el torso según el énfasis
+E018,Flexiones,Pecho,Empuje horizontal,Peso corporal,Principiante,Mantener el cuerpo alineado
+E019,Pullover con mancuerna,Pecho,Aislamiento,Mancuerna y banco,Intermedio,Evitar arquear la zona lumbar
+E020,Press inclinado con barra,Pecho,Empuje inclinado,Barra y banco,Intermedio,Controlar la bajada al esternón
+E021,Remo,Espalda,Tracción horizontal,Barra o máquina,Principiante-intermedio,Llevar los codos hacia atrás sin balanceo
+E022,Peso muerto ligero,Espalda,Bisagra de cadera,Barra,Intermedio,Mantener la barra cerca del cuerpo
+E023,Remo en polea baja,Espalda,Tracción horizontal,Polea,Principiante,Evitar encoger los hombros
+E024,Dominadas asistidas,Espalda,Tracción vertical,Máquina asistida o banda,Intermedio,Iniciar con los omóplatos activos
+E025,Remo en T,Espalda,Tracción horizontal,Barra T,Intermedio,Mantener el pecho apoyado si hay soporte
+E026,Face pull,Hombros,Tracción horizontal,Polea y cuerda,Principiante,Tirar hacia la frente con codos altos
+E027,Remo al mentón,Hombros,Tracción vertical,Barra o mancuernas,Intermedio,Evitar subir los codos por encima del hombro si molesta
+E028,Hiperextensiones,Espalda,Extensión de cadera,Banco romano,Intermedio,No hiperextender la lumbar
+E029,Remo unilateral en polea,Espalda,Tracción horizontal,Polea,Principiante,Mantener el tronco estable
+E030,Pull-over en polea alta,Espalda,Tracción vertical,Polea,Intermedio,Sentir el dorsal sin arquear la espalda
+E031,Prensa,Piernas,Dominante de rodilla,Máquina,Principiante,No bloquear las rodillas al final
+E032,Sentadilla,Piernas,Dominante de rodilla,Barra,Intermedio,Profundidad cómoda y controlada
+E033,Elevación de gemelos,Piernas,Flexión plantar,Máquina o escalón,Principiante,Pausa arriba y bajada controlada
+E034,Zancadas,Piernas,Dominante de rodilla,Mancuernas o peso corporal,Principiante,Mantener la rodilla alineada con el pie
+E035,Peso muerto rumano,Piernas,Bisagra de cadera,Barra o mancuernas,Intermedio,Empujar la cadera hacia atrás
+E036,Extensión de cuádriceps,Piernas,Extensión de rodilla,Máquina,Principiante,Evitar impulso y controlar la bajada
+E037,Sentadilla búlgara,Piernas,Unilateral,Mancuernas y banco,Intermedio,Apoyar el pie trasero sin cargar la rodilla
+E038,Buenos días,Espalda,Bisagra de cadera,Barra,Intermedio,Mantener la espalda neutra
+E039,Abductores en máquina,Piernas,Abducción de cadera,Máquina,Principiante,Movimiento lento y sin rebote
+E040,Aductores en máquina,Piernas,Aducción de cadera,Máquina,Principiante,Ajustar el rango sin forzar
+E041,Hip thrust,Glúteos,Extensión de cadera,Barra y banco,Intermedio,Empujar con talones y apretar glúteos
+E042,Patada de glúteo,Glúteos,Extensión de cadera,Polea o banda,Principiante,Evitar arquear la lumbar
+E043,Puente de glúteo,Glúteos,Extensión de cadera,Peso corporal,Principiante,Elevar la cadera sin compensar
+E044,Peso muerto sumo,Glúteos,Bisagra de cadera,Barra,Intermedio,Abrir rodillas y mantener la barra cerca
+E045,Step up,Glúteos,Unilateral,Mancuernas y banco,Intermedio,Subir con control desde el talón
+E046,Abducción de cadera con banda,Glúteos,Abducción de cadera,Banda,Principiante,Mantener tensión constante
+E047,Elevaciones laterales,Hombros,Abducción de hombro,Mancuernas,Principiante-intermedio,Elevar hasta la altura del hombro sin balanceo
+E048,Pájaros,Hombros,Abducción horizontal,Mancuernas,Principiante-intermedio,Mantener codos ligeramente flexionados
+E049,Press Arnold,Hombros,Empuje vertical,Mancuernas,Intermedio,Rotar de forma fluida y controlada
+E050,Elevación frontal,Hombros,Flexión de hombro,Mancuernas o disco,Principiante,Evitar usar impulso del torso
+E051,Pájaros en polea,Hombros,Abducción horizontal,Polea,Intermedio,Cruzar las poleas sin encoger los hombros
+E052,Press militar,Hombros,Empuje vertical,Barra,Intermedio,Mantener el core activo y las costillas abajo
+E053,Elevaciones laterales en polea,Hombros,Abducción de hombro,Polea,Intermedio,Controlar la bajada y no encoger el cuello
+E054,Curl martillo,Bíceps,Flexión de codo,Mancuernas,Principiante,Mantener las muñecas neutras
+E055,Curl en banco inclinado,Bíceps,Flexión de codo,Mancuernas y banco,Intermedio,Dejar que el brazo se extienda sin dolor
+E056,Curl en polea,Bíceps,Flexión de codo,Polea,Principiante,Evitar mover los codos hacia delante
+E057,Curl predicador,Bíceps,Flexión de codo,Banco Scott,Intermedio,No perder la tensión al bajar
+E058,Curl concentrado,Bíceps,Flexión de codo,Mancuerna y banco,Principiante,Apoyar el codo y controlar el recorrido
+E059,Curl inverso,Bíceps,Flexión de codo,Barra,Intermedio,Mantener las muñecas firmes
+E060,Press francés,Tríceps,Extensión de codo,Mancuerna o barra,Intermedio,Mantener los codos apuntando arriba
+E061,Fondos asistidos,Tríceps,Empuje vertical,Máquina asistida,Principiante,Bajar hasta un rango cómodo
+E062,Extensión sobre cabeza,Tríceps,Extensión de codo,Mancuerna o polea,Principiante,Mantener los codos cerca de la cabeza
+E063,Patada de tríceps,Tríceps,Extensión de codo,Mancuerna o polea,Principiante,Extender sin mover el brazo
+E064,Fondos en banco,Tríceps,Empuje vertical,Banco,Principiante,No bajar más allá de lo cómodo
+E065,Press cerrado,Tríceps,Empuje horizontal,Barra,Intermedio,Mantener los codos cerca del torso
+E066,Plancha lateral,Core,Estabilidad lateral,Colchoneta,Principiante,Mantener la cadera alineada
+E067,Crunch en polea,Core,Flexión de tronco,Polea,Intermedio,Redondear la espalda con control
+E068,Elevación de piernas,Core,Flexión de cadera,Barra o colchoneta,Intermedio,Evitar balanceo y compensación lumbar
+E069,Rueda abdominal,Core,Anti-extensión,Rueda,Intermedio,No dejar caer la cadera
+E070,Pallof press,Core,Anti-rotación,Polea o banda,Intermedio,Resistir la rotación sin girar el torso
+E071,Hollow hold,Core,Anti-extensión,Colchoneta,Intermedio,Mantener la lumbar pegada al suelo
+E072,Bird dog,Core,Estabilidad y coordinación,Colchoneta,Principiante,Movimientos lentos y controlados
+E073,Mountain climbers,Cardio,Actividad aeróbica,Peso corporal,Intermedio,Mantener la cadera baja y un ritmo constante
+E074,Bicicleta estática,Cardio,Actividad aeróbica,Bicicleta,Principiante,Ajustar el sillín y la resistencia
+E075,Cinta inclinada,Cardio,Actividad aeróbica,Cinta,Principiante-intermedio,Evitar agarrarse al manillar
+E076,Elíptica,Cardio,Actividad aeróbica,Elíptica,Principiante,Mantener una postura erguida
+E077,Remo ergómetro,Cardio,Actividad aeróbica,Remo ergómetro,Intermedio,Secuencia piernas-tronco-brazos
+E078,Burpees,Cardio,Actividad aeróbica,Peso corporal,Avanzado,Priorizar la técnica sobre la velocidad
+E079,Salto de comba,Cardio,Actividad aeróbica,Cuerda,Intermedio,Aterrizar con rodillas ligeramente flexionadas
+E080,Sprints,Cardio,Actividad anaeróbica,Peso corporal,Avanzado,Calentar y respetar la recuperación completa
+E081,Estiramiento de cadena posterior,Movilidad,Flexibilidad,Colchoneta,Principiante,Sostener sin rebotes
+E082,Movilidad torácica,Movilidad,Movilidad articular,Colchoneta o foam roller,Principiante,No forzar la rotación
+E083,Estiramiento de psoas,Movilidad,Flexibilidad,Colchoneta,Principiante,Mantener la pelvis neutra
+E084,Movilidad de tobillo,Movilidad,Movilidad articular,Pared o banda,Principiante,Buscar rango sin dolor
+E085,Yoga suave,Movilidad,Movilidad global,Colchoneta,Principiante,Respirar y evitar posturas dolorosas
+E086,Foam roller,Movilidad,Liberación miofascial,Foam roller,Principiante,Evitar zonas inflamadas o dolorosas
+E087,Kettlebell swing,Cuerpo completo,Bisagra de cadera,Pesa rusa,Intermedio,"Impulsar con la cadera, no con los brazos"
+E088,Thruster,Cuerpo completo,Potencia,Mancuernas,Avanzado,Coordinar sentadilla y press
+E089,Clean and press,Cuerpo completo,Potencia,Barra o mancuernas,Avanzado,Priorizar la técnica y el control
+E090,Turkish get-up,Cuerpo completo,Estabilidad global,Pesa rusa o mancuerna,Intermedio,Mirar la pesa durante el movimiento
+E091,Sentadilla con salto,Cuerpo completo,Potencia,Peso corporal,Avanzado,Aterrizar suave con rodillas alineadas
+E092,Battle ropes,Cuerpo completo,Acondicionamiento,Cuerdas,Intermedio,Mantener el core activo y un ritmo constante
+E093,Farmer carry,Cuerpo completo,Acarreo,Mancuernas o pesas rusas,Principiante,Caminar erguido y con pasos cortos
+E094,Box jump,Cuerpo completo,Potencia,Cajón,Avanzado,Aterrizar con control y bajar con cuidado
+E095,Sled push,Cuerpo completo,Empuje,Trineo,Intermedio,Inclinar el cuerpo y empujar con las piernas
+E096,Sentadilla frontal,Piernas,Dominante de rodilla,Barra,Intermedio,Mantener los codos altos
+E097,Peso muerto convencional,Espalda,Bisagra de cadera,Barra,Avanzado,Mantener la barra pegada y la espalda neutra
+E098,Press banca con mancuernas,Pecho,Empuje horizontal,Mancuernas y banco,Principiante,Bajar con control y no chocar las mancuernas
+E099,Elevación de talones sentado,Piernas,Flexión plantar,Máquina,Principiante,Pausa arriba y rango completo
+E100,Curl martillo con cuerda,Bíceps,Flexión de codo,Polea y cuerda,Principiante,Mantener los codos fijos

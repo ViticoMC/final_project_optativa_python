@@ -6,11 +6,13 @@ from app.config import (
     CATALOGO_PATH,
     COLUMNAS_EJERCICIO,
     COLUMNAS_NUTRICION,
+    COLUMNAS_PLANTILLA,
     COLUMNAS_RUTINA,
     NUTRICION_PATH,
     RUTINAS_PATH,
 )
 from app.exceptions import ExportError
+from app.models import Comida, PlantillaRutina
 from services.csv_service import CsvService
 from services.ejercicio_service import EjercicioService
 from services.estadistica_service import EstadisticaService
@@ -70,8 +72,8 @@ class ExportServiceTests(unittest.TestCase):
             columna_id="id_plan",
         )
 
-        self.assertEqual(len(ejercicios), 13)
-        self.assertEqual(len(comidas), 7)
+        self.assertEqual(len(ejercicios), 100)
+        self.assertEqual(len(comidas), 42)
         self.assertEqual(ejercicios[0]["nombre"], "Press de banca")
         self.assertEqual(comidas[0]["comida"], "Desayuno")
 
@@ -110,6 +112,47 @@ class ExportServiceTests(unittest.TestCase):
         with self.assertRaises(ExportError):
             self.servicio.exportar_rutinas("   ", ())
 
+    def test_exportar_plantillas_y_comidas_personales(self) -> None:
+        plantilla = PlantillaRutina(
+            id_plantilla="MR001",
+            grupo_muscular="Core",
+            ejercicios=("Plancha", "Dead bug"),
+            series=3,
+            repeticiones="20-30 s por ejercicio",
+            nivel="Principiante",
+            descanso="30 s",
+        )
+        comida = Comida(
+            id_plan="MC001",
+            comida="Desayuno",
+            horario="07:30",
+            alimentos=("huevo", "plátano"),
+            objetivo_general="Energía y proteína",
+            observaciones="Selección personal.",
+        )
+
+        destino_plantillas = self.servicio.exportar_plantillas(
+            self.directorio / "mis_rutinas.csv",
+            (plantilla,),
+        )
+        destino_comidas = self.servicio.exportar_comidas_personales(
+            self.directorio / "mis_comidas.csv",
+            (comida,),
+        )
+
+        plantillas = self.csv_service.leer(
+            destino_plantillas,
+            COLUMNAS_PLANTILLA,
+            columna_id="id_plantilla",
+        )
+        comidas = self.csv_service.leer(
+            destino_comidas,
+            COLUMNAS_NUTRICION,
+            columna_id="id_plan",
+        )
+        self.assertEqual(plantillas, [plantilla.to_row()])
+        self.assertEqual(comidas, [comida.to_row()])
+
     def test_exportar_estadisticas_genera_secciones(self) -> None:
         estadisticas = EstadisticaService().calcular(
             self.rutinas.todas(),
@@ -140,11 +183,11 @@ class ExportServiceTests(unittest.TestCase):
 
         self.assertIn("Rutinas por día", secciones)
         self.assertIn("Ejercicios en rutinas", secciones)
-        self.assertEqual(resumen["valor"], "10")
-        self.assertEqual(cobertura["valor"], "12")
-        self.assertEqual(cobertura["porcentaje"], "42.9")
-        self.assertEqual(cobertura["detalle"], "de 28")
-        self.assertEqual(plancha["valor"], "2")
+        self.assertEqual(resumen["valor"], "60")
+        self.assertEqual(cobertura["valor"], "100")
+        self.assertEqual(cobertura["porcentaje"], "100.0")
+        self.assertEqual(cobertura["detalle"], "de 100")
+        self.assertEqual(plancha["valor"], "8")
         self.assertEqual(plancha["detalle"], "En catálogo")
 
     def test_estadisticas_sin_datos(self) -> None:

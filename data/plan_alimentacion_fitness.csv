@@ -6,3 +6,38 @@ D004,Merienda,16:30,Pan integral o fruta; queso fresco o yogur,Energía y prote�
 D005,Cena,19:30,"Pescado, pollo, huevo o legumbres; verduras; arroz o vianda según actividad",Proteína y micronutrientes,Adaptar cantidad al apetito y necesidades
 D006,Hidratación,Durante el día,Agua regularmente; más según calor y sudoración,Hidratación,No sustituye comidas; necesidades individuales varían
 D007,Postentreno,Después de entrenar,Comida habitual con fuente de proteína y carbohidratos,Recuperación,No es obligatorio usar suplementos
+D008,Desayuno,07:30,Tostadas integrales; huevos revueltos; tomate; aceite de oliva,Energía y proteína,Ajustar la cantidad de pan según el gasto energético
+D009,Desayuno,07:30,Yogur griego; granola sin azúcar; arándanos; nueces,Proteína y fibra,Elegir granola con bajo contenido de azúcar
+D010,Desayuno,07:30,Tortilla de claras; espinaca; queso fresco; pan integral,Proteína y micronutrientes,Combinar con fruta si se necesita más energía
+D011,Desayuno,07:30,Batido de leche; avena; banana; mantequilla de maní,Energía y proteína,Útil antes de un entrenamiento matutino
+D012,Desayuno,07:30,Pan integral; palta; huevo poché; semillas de chía,Grasas saludables y proteína,Moderar la palta según el objetivo calórico
+D013,Media mañana,10:30,Requesón; pera; almendras,Proteína y fibra,Alternar con yogur para variar
+D014,Media mañana,10:30,Manzana; queso fresco; nueces,Energía y proteína,Elegir fruta de temporada
+D015,Media mañana,10:30,Yogur natural; fresas; semillas de girasol,Proteína y antioxidantes,Evitar añadir azúcar
+D016,Media mañana,10:30,Huevo duro; zanahoria; hummus,Proteína y grasas saludables,Opción práctica para llevar
+D017,Media mañana,10:30,Batido de yogur; mango; avena,Energía y proteína,Ajustar la porción según el hambre
+D018,Almuerzo,13:00,Pechuga de pollo; arroz integral; brócoli; aceite de oliva,Proteína y energía,Cocinar con poca sal y variar verduras
+D019,Almuerzo,13:00,Salmón; quinoa; espárragos; limón,Proteína y omega-3,Elegir pescado fresco o congelado sin procesar
+D020,Almuerzo,13:00,Lentejas; arroz; zanahoria; cebolla; pimiento,Proteína vegetal y fibra,Combinar legumbres con cereal para completar aminoácidos
+D021,Almuerzo,13:00,Carne magra; papa; ensalada mixta; aceite de oliva,Proteína y energía,Controlar la porción de papa según el objetivo
+D022,Almuerzo,13:00,Tofu; fideos integrales; verduras salteadas; sésamo,Proteína vegetal y carbohidratos,Usar tofu firme y salsa baja en sodio
+D023,Merienda,16:30,Tostada integral; queso fresco; tomate,Energía y proteína,Ideal si la cena se retrasa
+D024,Merienda,16:30,Yogur griego; banana; canela,Proteína y carbohidratos,Elegir yogur sin azúcar añadido
+D025,Merienda,16:30,Batido de leche; cacao puro; dátiles,Energía y recuperación,Ajustar la cantidad de dátiles
+D026,Merienda,16:30,Huevo cocido; pan integral; aguacate,Proteína y grasas saludables,Opción saciante antes de entrenar
+D027,Merienda,16:30,Requesón; mandarina; pistachos,Proteína y fibra,Medir el puñado de pistachos
+D028,Cena,19:30,Merluza; puré de calabaza; brócoli,Proteína magra y verduras,Cena ligera y fácil de digerir
+D029,Cena,19:30,Pavo; ensalada de quinoa; tomate; pepino,Proteína y fibra,Ajustar el aderezo a una cucharada de aceite
+D030,Cena,19:30,Tortilla de huevo; espinaca; champiñones; pan integral,Proteína y fibra,Combinar con verduras para aumentar la fibra
+D031,Cena,19:30,Garbanzos; espinaca; arroz; comino,Proteína vegetal y fibra,Opción vegetariana completa
+D032,Cena,19:30,Salmón; verduras al horno; papa pequeña,Proteína y omega-3,Evitar salsas cremosas
+D033,Hidratación,Durante el día,Agua; limón,Hidratación,Beber antes de tener sed
+D034,Hidratación,Durante el día,Agua; infusión sin azúcar,Hidratación,Alternar agua e infusiones
+D035,Hidratación,Durante el día,Bebida isotónica; agua,Hidratación y electrolitos,Usar en sesiones largas o con mucho calor
+D036,Hidratación,Durante el día,Agua; sandía; pepino,Hidratación y micronutrientes,Adecuado en días calurosos
+D037,Hidratación,Durante el día,Agua mineral; naranja,Hidratación y vitamina C,Evitar jugos azucarados
+D038,Postentreno,Después de entrenar,Pechuga de pollo; arroz; verduras,Recuperación muscular,Consumir dentro de las dos horas posteriores
+D039,Postentreno,Después de entrenar,Batido de proteína; banana; avena,Recarga y proteína,La proteína en polvo es opcional
+D040,Postentreno,Después de entrenar,Yogur griego; frutos rojos; granola,Proteína y energía,Elegir granola baja en azúcar
+D041,Postentreno,Después de entrenar,Atún; pan integral; tomate,Recuperación y saciedad,Opción rápida y económica
+D042,Postentreno,Después de entrenar,Tofu; arroz; verduras,Recuperación vegetal,Opción vegetal con proteína completa

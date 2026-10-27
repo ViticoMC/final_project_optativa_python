@@ -79,6 +79,7 @@ class NutricionTab(QWidget):
         self.boton_exportar.clicked.connect(self.exportar_solicitado.emit)
 
         self.boton_importar = QPushButton("Importar plan CSV")
+        self.boton_importar.setObjectName("boton_primario")
         self.boton_importar.setToolTip(
             "Seleccionar un archivo CSV con el plan de alimentación"
         )
@@ -144,6 +145,10 @@ class NutricionTab(QWidget):
         self.atajo_limpiar = QShortcut(QKeySequence("Ctrl+L"), self)
         self.atajo_limpiar.setContext(Qt.WidgetWithChildrenShortcut)
         self.atajo_limpiar.activated.connect(self._limpiar_filtros)
+
+        self.atajo_buscar = QShortcut(QKeySequence.Find, self)
+        self.atajo_buscar.setContext(Qt.WidgetWithChildrenShortcut)
+        self.atajo_buscar.activated.connect(self._enfocar_busqueda)
 
         return filtros
 
@@ -333,6 +338,10 @@ class NutricionTab(QWidget):
             "objetivo": self.combo_objetivo.currentData() or "",
             "texto": self.busqueda.text(),
         }
+
+    def _enfocar_busqueda(self) -> None:
+        self.busqueda.setFocus()
+        self.busqueda.selectAll()
 
     def _limpiar_filtros(self) -> None:
         for combo in self._combos:

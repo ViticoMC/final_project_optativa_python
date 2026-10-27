@@ -2,7 +2,7 @@ import unittest
 
 from PyQt5.QtCore import Qt
 
-from app.models import Comida, Ejercicio, Rutina
+from app.models import Comida, Ejercicio, PlantillaRutina, Rutina
 from services.estadistica_service import Distribucion, EjercicioRutina
 from tests.qt_test_case import QtTestCase
 from ui.models.table_models import (
@@ -10,6 +10,7 @@ from ui.models.table_models import (
     DistribucionTableModel,
     EjercicioRutinaTableModel,
     EjercicioTableModel,
+    PlantillaRutinaTableModel,
     RutinaTableModel,
 )
 
@@ -164,6 +165,61 @@ class RutinaTableModelTests(QtTestCase):
         self.assertIsInstance(registros, tuple)
         self.assertEqual(len(registros), 3)
         self.assertEqual(self.modelo.rowCount(), 3)
+
+
+def crear_plantilla(
+    id_plantilla: str,
+    grupo: str = "Core",
+    series: int = 3,
+) -> PlantillaRutina:
+    return PlantillaRutina(
+        id_plantilla=id_plantilla,
+        grupo_muscular=grupo,
+        ejercicios=("Plancha", "Dead bug"),
+        series=series,
+        repeticiones="20-30 s por ejercicio",
+        nivel="Principiante",
+        descanso="30 s",
+    )
+
+
+class PlantillaRutinaTableModelTests(QtTestCase):
+    def setUp(self) -> None:
+        self.modelo = PlantillaRutinaTableModel(
+            [
+                crear_plantilla("MR001", series=3),
+                crear_plantilla("MR002", grupo="Piernas", series=2),
+            ]
+        )
+
+    def test_dimensiones_y_datos(self) -> None:
+        self.assertEqual(self.modelo.rowCount(), 2)
+        self.assertEqual(self.modelo.columnCount(), 7)
+        self.assertEqual(
+            self.modelo.headerData(1, Qt.Horizontal, Qt.DisplayRole),
+            "Grupo muscular",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 2), Qt.DisplayRole),
+            "Plancha; Dead bug",
+        )
+        self.assertEqual(
+            self.modelo.data(self.modelo.index(0, 3), Qt.DisplayRole),
+            "3",
+        )
+        self.assertIsInstance(
+            self.modelo.data(self.modelo.index(0, 0), Qt.UserRole),
+            PlantillaRutina,
+        )
+
+    def test_sort_numerico_de_series(self) -> None:
+        self.modelo.sort(3, Qt.AscendingOrder)
+
+        series = [
+            self.modelo.registro_en(fila).series
+            for fila in range(self.modelo.rowCount())
+        ]
+        self.assertEqual(series, [2, 3])
 
 
 class EjercicioTableModelTests(QtTestCase):

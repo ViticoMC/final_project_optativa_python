@@ -43,9 +43,9 @@ class EjercicioServiceTests(unittest.TestCase):
     def test_carga_datos_reales(self) -> None:
         total = self.servicio.cargar()
 
-        self.assertEqual(total, 13)
-        self.assertEqual(self.servicio.total(), 13)
-        self.assertEqual(len(self.servicio.todos()), 13)
+        self.assertEqual(total, 100)
+        self.assertEqual(self.servicio.total(), 100)
+        self.assertEqual(len(self.servicio.todos()), 100)
         self.assertEqual(self.servicio.ruta, CATALOGO_PATH)
         self.assertEqual(
             self.servicio.por_id("E001").nombre,
@@ -141,7 +141,7 @@ class EjercicioServiceTests(unittest.TestCase):
                     nivel="Principiante-intermedio",
                 )
             ],
-            ["E001", "E002"],
+            ["E001", "E002", "E014"],
         )
         self.assertEqual(
             [
@@ -151,18 +151,75 @@ class EjercicioServiceTests(unittest.TestCase):
                     nivel="Principiante",
                 )
             ],
-            [],
+            ["E015", "E018", "E098"],
         )
 
     def test_busqueda_texto(self) -> None:
         self.servicio.cargar()
 
         casos = (
-            ("empuje", ["E001", "E002", "E007"]),
-            ("core", ["E010", "E011"]),
-            ("lumbar", ["E011"]),
-            ("biceps", ["E008"]),
-            ("polea", ["E003", "E009"]),
+            (
+                "empuje",
+                [
+                    "E001",
+                    "E002",
+                    "E007",
+                    "E015",
+                    "E016",
+                    "E017",
+                    "E018",
+                    "E020",
+                    "E049",
+                    "E052",
+                    "E061",
+                    "E064",
+                    "E065",
+                    "E095",
+                    "E098",
+                ],
+            ),
+            (
+                "core",
+                [
+                    "E010",
+                    "E011",
+                    "E052",
+                    "E066",
+                    "E067",
+                    "E068",
+                    "E069",
+                    "E070",
+                    "E071",
+                    "E072",
+                    "E092",
+                ],
+            ),
+            ("lumbar", ["E011", "E019", "E028", "E042", "E068", "E071"]),
+            (
+                "biceps",
+                ["E008", "E054", "E055", "E056", "E057", "E058", "E059", "E100"],
+            ),
+            (
+                "polea",
+                [
+                    "E003",
+                    "E009",
+                    "E014",
+                    "E023",
+                    "E026",
+                    "E029",
+                    "E030",
+                    "E042",
+                    "E051",
+                    "E053",
+                    "E056",
+                    "E062",
+                    "E063",
+                    "E067",
+                    "E070",
+                    "E100",
+                ],
+            ),
             ("no existe", []),
         )
         for texto, esperados in casos:
@@ -178,14 +235,14 @@ class EjercicioServiceTests(unittest.TestCase):
 
         self.assertEqual(
             [e.id_ejercicio for e in self.servicio.filtrar(grupo="BICEPS")],
-            ["E008"],
+            ["E008", "E054", "E055", "E056", "E057", "E058", "E059", "E100"],
         )
         self.assertEqual(
             [
                 e.id_ejercicio
                 for e in self.servicio.filtrar(patron="extension de codo")
             ],
-            ["E009"],
+            ["E009", "E060", "E062", "E063"],
         )
 
     def test_cobertura_con_rutinas_reales(self) -> None:
@@ -195,12 +252,12 @@ class EjercicioServiceTests(unittest.TestCase):
 
         cobertura = self.servicio.cobertura(rutinas.todas())
 
-        self.assertEqual(cobertura.total, 28)
-        self.assertEqual(len(cobertura.encontrados), 12)
-        self.assertEqual(len(cobertura.faltantes), 16)
-        self.assertAlmostEqual(cobertura.porcentaje, 42.857, places=3)
+        self.assertEqual(cobertura.total, 100)
+        self.assertEqual(len(cobertura.encontrados), 100)
+        self.assertEqual(len(cobertura.faltantes), 0)
+        self.assertAlmostEqual(cobertura.porcentaje, 100.0)
         self.assertIn("Press de banca", cobertura.encontrados)
-        self.assertIn("Prensa", cobertura.faltantes)
+        self.assertNotIn("Prensa", cobertura.faltantes)
         self.assertEqual(
             set(cobertura.encontrados) | set(cobertura.faltantes),
             set(cobertura.usados),
@@ -230,7 +287,7 @@ class EjercicioServiceTests(unittest.TestCase):
             self.servicio.cargar(ruta)
 
         self.assertIn("nombre", str(contexto.exception))
-        self.assertEqual(self.servicio.total(), 13)
+        self.assertEqual(self.servicio.total(), 100)
         self.assertEqual(self.servicio.ruta, CATALOGO_PATH)
 
     def test_cargar_archivo_sin_registros(self) -> None:

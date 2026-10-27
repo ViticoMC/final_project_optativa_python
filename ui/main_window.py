@@ -1,19 +1,21 @@
 from pathlib import Path
 
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import (
     QAction,
     QFileDialog,
     QLabel,
     QMainWindow,
-    QMessageBox,
     QTabWidget,
 )
 
-from app.config import APP_TITLE, APP_VERSION, DATA_DIR
+from app.config import APP_TITLE, DATA_DIR
 from app.exceptions import FitPlanError
 from services.container import AppServices
+from ui.dialogs import mostrar_acerca_de, mostrar_error
 from ui.widgets.ejercicios_tab import EjerciciosTab
 from ui.widgets.estadisticas_tab import EstadisticasTab
+from ui.widgets.mi_plan_tab import MiPlanTab
 from ui.widgets.nutricion_tab import NutricionTab
 from ui.widgets.rutinas_tab import RutinasTab
 
@@ -22,17 +24,27 @@ class MainWindow(QMainWindow):
     def __init__(
         self,
         servicios: AppServices,
+        settings: QSettings | None = None,
         parent=None,
     ) -> None:
         super().__init__(parent)
         self.servicios = servicios
+        self._settings = settings
         self.rutina_service = servicios.rutinas
         self.ejercicio_service = servicios.ejercicios
         self.nutricion_service = servicios.nutricion
         self.estadistica_service = servicios.estadisticas
         self.exportacion_service = servicios.exportacion
-        self._ultima_carpeta = Path(DATA_DIR)
-        self._carpeta_exportacion = Path.home()
+        self.plantilla_service = servicios.plantillas
+        self.comida_personal_service = servicios.comidas_personales
+        self._ultima_carpeta = self._carpeta_preferida(
+            "rutas/importacion",
+            Path(DATA_DIR),
+        )
+        self._carpeta_exportacion = self._carpeta_preferida(
+            "rutas/exportacion",
+            Path.home(),
+        )
 
         self.setWindowTitle(APP_TITLE)
         self.resize(1200, 820)
@@ -42,6 +54,7 @@ class MainWindow(QMainWindow):
         self._construir_ui()
         self._construir_menu()
         self._construir_barra_estado()
+        self._restaurar_ventana()
         self._cargar_datos_iniciales()
 
     def _construir_acciones(self) -> None:
@@ -114,12 +127,83 @@ class MainWindow(QMainWindow):
             self._exportar_estadisticas
         )
 
+        self.accion_exportar_plantillas = QAction(
+            "Exportar mis &rutinas...",
+            self,
+        )
+        self.accion_exportar_plantillas.setStatusTip(
+            "Guardar en CSV la biblioteca de plantillas personales"
+        )
+        self.accion_exportar_plantillas.triggered.connect(
+            self._exportar_plantillas
+        )
+
+        self.accion_exportar_comidas_personales = QAction(
+            "Exportar mis &comidas...",
+            self,
+        )
+        self.accion_exportar_comidas_personales.setStatusTip(
+            "Guardar en CSV las comidas personales"
+        )
+        self.accion_exportar_comidas_personales.triggered.connect(
+            self._exportar_comidas_personales
+        )
+
+        self.accion_recargar = QAction("&Recargar datos", self)
+        self.accion_recargar.setShortcut("F5")
+        self.accion_recargar.setStatusTip(
+            "Volver a leer los datos estándar y personales"
+        )
+        self.accion_recargar.triggered.connect(self._recargar_datos)
+
+        self.accion_ver_rutinas = self._crear_accion_pestana(
+            "&Rutinas",
+            "Ctrl+1",
+            0,
+        )
+        self.accion_ver_ejercicios = self._crear_accion_pestana(
+            "&Ejercicios",
+            "Ctrl+2",
+            1,
+        )
+        self.accion_ver_nutricion = self._crear_accion_pestana(
+            "&Nutrición",
+            "Ctrl+3",
+            2,
+        )
+        self.accion_ver_estadisticas = self._crear_accion_pestana(
+            "&Estadísticas",
+            "Ctrl+4",
+            3,
+        )
+        self.accion_ver_mi_plan = self._crear_accion_pestana(
+            "Mi &plan",
+            "Ctrl+5",
+            4,
+        )
+
         self.accion_salir = QAction("&Salir", self)
         self.accion_salir.setShortcut("Ctrl+Q")
         self.accion_salir.triggered.connect(self.close)
 
         self.accion_acerca = QAction("&Acerca de FitPlan", self)
         self.accion_acerca.triggered.connect(self._acerca_de)
+
+    def _crear_accion_pestana(
+        self,
+        texto: str,
+        atajo: str,
+        indice: int,
+    ) -> QAction:
+        accion = QAction(texto, self)
+        accion.setShortcut(atajo)
+        accion.setStatusTip(
+            f"Ir a la pestaña {texto.replace('&', '')}"
+        )
+        accion.triggered.connect(
+            lambda: self.tabs.setCurrentIndex(indice)
+        )
+        return accion
 
     def _construir_ui(self) -> None:
         self.tabs = QTabWidget()
@@ -162,6 +246,21 @@ class MainWindow(QMainWindow):
         )
         self.tabs.addTab(self.estadisticas_tab, "Estadísticas")
 
+        self.mi_plan_tab = MiPlanTab(
+            self.plantilla_service,
+            self.comida_personal_service,
+        )
+        self.mi_plan_tab.exportar_plantillas_solicitado.connect(
+            self._exportar_plantillas
+        )
+        self.mi_plan_tab.exportar_comidas_solicitado.connect(
+            self._exportar_comidas_personales
+        )
+        self.mi_plan_tab.datos_cambiados.connect(
+            self._actualizar_estado_global
+        )
+        self.tabs.addTab(self.mi_plan_tab, "Mi plan")
+
         self.setCentralWidget(self.tabs)
 
     def _construir_menu(self) -> None:
@@ -177,9 +276,21 @@ class MainWindow(QMainWindow):
         menu_exportar.addAction(self.accion_exportar_nutricion)
         menu_exportar.addSeparator()
         menu_exportar.addAction(self.accion_exportar_estadisticas)
+        menu_exportar.addSeparator()
+        menu_exportar.addAction(self.accion_exportar_plantillas)
+        menu_exportar.addAction(self.accion_exportar_comidas_personales)
 
         menu_archivo.addSeparator()
         menu_archivo.addAction(self.accion_salir)
+
+        menu_ver = self.menuBar().addMenu("&Ver")
+        menu_ver.addAction(self.accion_ver_rutinas)
+        menu_ver.addAction(self.accion_ver_ejercicios)
+        menu_ver.addAction(self.accion_ver_nutricion)
+        menu_ver.addAction(self.accion_ver_estadisticas)
+        menu_ver.addAction(self.accion_ver_mi_plan)
+        menu_ver.addSeparator()
+        menu_ver.addAction(self.accion_recargar)
 
         menu_ayuda = self.menuBar().addMenu("A&yuda")
         menu_ayuda.addAction(self.accion_acerca)
@@ -195,7 +306,6 @@ class MainWindow(QMainWindow):
             self.rutinas_tab.refrescar_datos(reiniciar_filtros=True)
             self._mostrar_error("No se pudieron cargar las rutinas", exc)
         else:
-            self._ultima_carpeta = self.rutina_service.ruta.parent
             self.rutinas_tab.refrescar_datos(reiniciar_filtros=True)
 
         try:
@@ -214,12 +324,25 @@ class MainWindow(QMainWindow):
         else:
             self.nutricion_tab.refrescar_datos(reiniciar_filtros=True)
 
+        try:
+            self.plantilla_service.cargar()
+        except FitPlanError as exc:
+            self._mostrar_error("No se pudieron cargar mis rutinas", exc)
+
+        try:
+            self.comida_personal_service.cargar()
+        except FitPlanError as exc:
+            self._mostrar_error("No se pudieron cargar mis comidas", exc)
+
+        self.mi_plan_tab.refrescar_datos()
         self._actualizar_estado_global()
         self.estadisticas_tab.refrescar_datos()
         if (
             self.rutina_service.total()
             or self.ejercicio_service.total()
             or self.nutricion_service.total()
+            or self.plantilla_service.total()
+            or self.comida_personal_service.total()
         ):
             self.statusBar().showMessage("Datos iniciales cargados", 4000)
 
@@ -295,6 +418,44 @@ class MainWindow(QMainWindow):
             f"Plan nutricional importado: {total} comidas · {Path(ruta).name}",
             4000,
         )
+
+    def _recargar_datos(self) -> None:
+        fuentes = (
+            ("rutinas", self.rutina_service),
+            ("catálogo", self.ejercicio_service),
+            ("plan nutricional", self.nutricion_service),
+            ("mis plantillas", self.plantilla_service),
+            ("mis comidas", self.comida_personal_service),
+        )
+        fallos: list[str] = []
+
+        for nombre, servicio in fuentes:
+            try:
+                servicio.cargar()
+            except FitPlanError as exc:
+                fallos.append(f"{nombre}: {exc}")
+
+        self.rutinas_tab.refrescar_datos()
+        self.ejercicios_tab.refrescar_datos()
+        self.nutricion_tab.refrescar_datos()
+        self.estadisticas_tab.refrescar_datos()
+        self.mi_plan_tab.refrescar_datos()
+        self._actualizar_estado_global()
+
+        if fallos:
+            self.statusBar().showMessage(
+                "Recarga completada con incidencias",
+                5000,
+            )
+            self._mostrar_error(
+                "No se pudieron recargar todos los datos",
+                FitPlanError("\n".join(fallos)),
+            )
+        else:
+            self.statusBar().showMessage(
+                "Datos recargados correctamente",
+                4000,
+            )
 
     def _exportar_rutinas(self) -> None:
         ruta = self._solicitar_ruta_exportacion(
@@ -387,6 +548,56 @@ class MainWindow(QMainWindow):
             5000,
         )
 
+    def _exportar_plantillas(self) -> None:
+        ruta = self._solicitar_ruta_exportacion(
+            "Exportar mis rutinas",
+            "mis_rutinas_exportadas.csv",
+        )
+        if ruta is None:
+            return
+
+        registros = self.mi_plan_tab.plantillas_visibles()
+        try:
+            destino = self.exportacion_service.exportar_plantillas(
+                ruta,
+                registros,
+            )
+        except FitPlanError as exc:
+            self._mostrar_error(
+                "No se pudieron exportar mis rutinas",
+                exc,
+            )
+            return
+
+        self._finalizar_exportacion("plantillas", len(registros), destino)
+
+    def _exportar_comidas_personales(self) -> None:
+        ruta = self._solicitar_ruta_exportacion(
+            "Exportar mis comidas",
+            "mis_comidas_exportadas.csv",
+        )
+        if ruta is None:
+            return
+
+        registros = self.mi_plan_tab.comidas_visibles()
+        try:
+            destino = self.exportacion_service.exportar_comidas_personales(
+                ruta,
+                registros,
+            )
+        except FitPlanError as exc:
+            self._mostrar_error(
+                "No se pudieron exportar mis comidas",
+                exc,
+            )
+            return
+
+        self._finalizar_exportacion(
+            "comidas personales",
+            len(registros),
+            destino,
+        )
+
     def _solicitar_ruta_exportacion(
         self,
         titulo: str,
@@ -431,20 +642,66 @@ class MainWindow(QMainWindow):
         self.etiqueta_estado.setText(
             f"{self.rutina_service.total()} rutinas · "
             f"{self.ejercicio_service.total()} ejercicios · "
-            f"{self.nutricion_service.total()} comidas"
+            f"{self.nutricion_service.total()} comidas · "
+            f"{self.plantilla_service.total()} plantillas · "
+            f"{self.comida_personal_service.total()} mis comidas"
         )
 
     def _mostrar_error(self, titulo: str, error: Exception) -> None:
-        QMessageBox.critical(self, titulo, str(error))
+        mostrar_error(self, titulo, error)
 
     def _acerca_de(self) -> None:
-        QMessageBox.about(
-            self,
-            "Acerca de FitPlan",
-            (
-                f"<h3>FitPlan {APP_VERSION}</h3>"
-                "<p>Gestor de rutinas de entrenamiento, catálogo de ejercicios "
-                "y planificación nutricional.</p>"
-                "<p>Desarrollado en Python con PyQt5.</p>"
-            ),
+        mostrar_acerca_de(self)
+
+    def _carpeta_preferida(
+        self,
+        clave: str,
+        predeterminada: Path,
+    ) -> Path:
+        if self._settings is None:
+            return predeterminada
+
+        valor = self._settings.value(clave, "")
+        if valor:
+            ruta = Path(str(valor))
+            if ruta.is_dir():
+                return ruta
+        return predeterminada
+
+    def _restaurar_ventana(self) -> None:
+        if self._settings is None:
+            return
+
+        geometria = self._settings.value("ventana/geometria")
+        if geometria is not None:
+            self.restoreGeometry(geometria)
+
+        try:
+            indice = int(self._settings.value("ventana/pestana", 0))
+        except (TypeError, ValueError):
+            indice = 0
+        if 0 <= indice < self.tabs.count():
+            self.tabs.setCurrentIndex(indice)
+
+    def _guardar_preferencias(self) -> None:
+        if self._settings is None:
+            return
+
+        self._settings.setValue("ventana/geometria", self.saveGeometry())
+        self._settings.setValue(
+            "ventana/pestana",
+            self.tabs.currentIndex(),
         )
+        self._settings.setValue(
+            "rutas/importacion",
+            str(self._ultima_carpeta),
+        )
+        self._settings.setValue(
+            "rutas/exportacion",
+            str(self._carpeta_exportacion),
+        )
+        self._settings.sync()
+
+    def closeEvent(self, event) -> None:
+        self._guardar_preferencias()
+        super().closeEvent(event)
